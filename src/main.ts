@@ -50,6 +50,6 @@ async function bootstrap() {
   //启动swagger
   SwaggerModule.setup("swagger", app, document); // 访问路径为 localhost:8000/doc
 
-  await app.listen(3000);
+  await app.listen(3399);
 }
 bootstrap();
