@@ -25,4 +25,6 @@ export default {
     }
   }
   
+//   git remote set-url origin https://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@github.com/Hacker233/resume-server.git
+
   

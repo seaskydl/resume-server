@@ -140,7 +140,7 @@ export class AuthService {
           text: '邮箱验证', 
           html: '您好! <br><br> 欢迎注册化简~~<br><br>'+
           `<a href='${config.host.url}:${config.host.port}/auth/email/verify/${model.emailToken}'>
-            ${config.host.url}:${config.host.port}/auth/email/verify/${model.emailToken}
+            ${config.host.url}/resume/auth/email/verify/${model.emailToken}
           </a><br>请点击连接以此验证你的邮箱！`
         };
     
