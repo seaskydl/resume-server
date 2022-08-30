@@ -10,7 +10,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.setGlobalPrefix("resume");
+  app.setGlobalPrefix("huajian");
   app.use("/public", express.static(join(__dirname, "../../public")));
   var bodyParser = require("body-parser");
   app.use(bodyParser.json({ limit: "5mb" }));

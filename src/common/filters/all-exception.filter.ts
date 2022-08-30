@@ -24,7 +24,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     //     } 
     // }
 
-    console.error(exception.stack);
+    // console.error(exception.stack);
 
     response
       .status(status)

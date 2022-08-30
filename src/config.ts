@@ -8,12 +8,12 @@ export default {
         "authSource": null
     },
     "host": {
-        "url": "http://huajian.smallpig.site", // 线上环境
-        // "url": "http://localhost:3399", // 本地环境
-        "port": "3000"
+        // "url": "http://huajian.smallpig.site", // 线上环境
+        "url": "http://localhost:3399", // 本地环境
+        "port": "3399"
     },
     "jwt": {
-        "secretOrKey": "secret",
+        "secretOrKey": "smallpig",
         "expiresIn": 36000000
     },
     "mail":{

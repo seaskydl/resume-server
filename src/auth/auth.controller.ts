@@ -21,7 +21,7 @@ export class AuthController {
   public async login(@Body() login: Login): Promise<IResponse> {
     try {
       var response = await this.authService.validateLogin(login.email, login.password);
-      return new ResponseSuccess("注册成功", response);
+      return new ResponseSuccess("登录成功", response);
     } catch(error) {
       return new ResponseError("LOGIN.ERROR", error);
     }
