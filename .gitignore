@@ -1,6 +1,8 @@
 # dependencies
 /node_modules
 
+/src/config.ts
+
 # IDE
 /.idea
 /.awcache
