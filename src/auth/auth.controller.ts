@@ -9,6 +9,7 @@ import { UserDto } from '../users/dto/user.dto';
 import { UsersService } from '../users/users.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {default as config} from '../config';
 
 @ApiTags('用户相关接口')
 @Controller('auth')
@@ -23,7 +24,7 @@ export class AuthController {
       var response = await this.authService.validateLogin(login.email, login.password);
       return new ResponseSuccess("登录成功", response);
     } catch(error) {
-      return new ResponseError("LOGIN.ERROR", error);
+      return new ResponseError(error.message, null, error.status);
     }
   }
 
@@ -48,12 +49,19 @@ export class AuthController {
 
   @ApiOperation({ summary: '邮箱验证'})
   @Get('email/verify/:token')
-  public async verifyEmail(@Param() params): Promise<IResponse> {
+  public async verifyEmail(@Param() params): Promise<any> {
     try {
       var isEmailVerified = await this.authService.verifyEmail(params.token);
-      return new ResponseSuccess("LOGIN.EMAIL_VERIFIED", isEmailVerified);
+      let str = `<div style="width: 100%;height: 300px;display:flex; justify-content: center;align-items: center;font-size: 25px;">
+                  <p>邮箱验证通过啦!  </p>
+                  <a style="text-decoration: none" href="${config.host.url}">点击链接立即返回>></a>
+                </div>`
+      return str;
     } catch(error) {
-      return new ResponseError("LOGIN.ERROR", error);
+      let str = `<div style="width: 100%;height: 300px;display:flex; justify-content: center;align-items: center;font-size: 25px;">
+                  <p>该验证链接已失效!  </p>
+                </div>`
+      return str;
     }
   }
   @ApiOperation({ summary: '重发邮箱验证链接'})
@@ -63,12 +71,12 @@ export class AuthController {
       await this.authService.createEmailToken(params.email);
       var isEmailSent = await this.authService.sendEmailVerification(params.email);
       if(isEmailSent){
-        return new ResponseSuccess("LOGIN.EMAIL_RESENT", null);
+        return new ResponseSuccess("邮箱验证链接重发成功", null);
       } else {
-        return new ResponseError("REGISTRATION.ERROR.MAIL_NOT_SENT");
+        return new ResponseError("该邮箱尚未注册", null, 404);
       }
     } catch(error) {
-      return new ResponseError("LOGIN.ERROR.SEND_EMAIL", error);
+      return new ResponseError(error.message, null, error.status);
     }
   }
   @ApiOperation({ summary: '忘记密码'})
@@ -82,7 +90,7 @@ export class AuthController {
         return new ResponseError("REGISTRATION.ERROR.MAIL_NOT_SENT");
       }
     } catch(error) {
-      return new ResponseError("LOGIN.ERROR.SEND_EMAIL", error);
+      return new ResponseError(error.message, null, error.status);
     }
   }
   @ApiOperation({ summary: '重置密码'})
@@ -103,11 +111,11 @@ export class AuthController {
         isNewPasswordChanged = await this.userService.setPassword(forgottenPasswordModel.email, resetPassword.newPassword);
         if(isNewPasswordChanged) await forgottenPasswordModel.remove();
       } else {
-        return new ResponseError("RESET_PASSWORD.CHANGE_PASSWORD_ERROR");
+        return new ResponseError('设置密码失败', null, 500);
       }
       return new ResponseSuccess("RESET_PASSWORD.PASSWORD_CHANGED", isNewPasswordChanged);
     } catch(error) {
-      return new ResponseError("RESET_PASSWORD.CHANGE_PASSWORD_ERROR", error);
+      return new ResponseError('重置密码失败', error, 500);
     }
   }
 
