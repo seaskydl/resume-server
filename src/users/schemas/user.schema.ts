@@ -3,7 +3,7 @@ import { PhotoSchema } from 'common/schemas/photo.schema';
 
 export const UserSchema = new mongoose.Schema({
   id: String,
-  date: {type: String, default: Date()},
+  date: {type: Date, default: Date.now},
   name: String,
   surname: String,
   email: String,
