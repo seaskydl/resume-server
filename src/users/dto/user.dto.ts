@@ -9,7 +9,7 @@ export class UserDto {
     this.phone = object.phone;
     this.birthdaydate = object.birthdaydate;
     this.settings = new SettingsDto(object.settings);
-    console.log("object.auth", object.auth.email.valid);
+    // console.log("object.auth", object.auth.email.valid);
     this.auth = {
       email: {
         valid: object.auth.email.valid,
@@ -24,12 +24,20 @@ export class UserDto {
         this.photos.gallery.push(new PhotoDto(photo));
       });
     }
+    // 添加角色
+    this.roles = [];
+    if (object.roles) {
+      object.roles.forEach((item) => {
+        this.roles.push(item);
+      });
+    }
   }
   readonly name: string;
   readonly surname: string;
   readonly email: string;
   readonly phone: string;
   readonly birthdaydate: Date;
+  roles: Array<string>;
   auth: {
     email: {
       valid: boolean;

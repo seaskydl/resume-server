@@ -7,7 +7,7 @@ export class ResponseError implements IResponse{
     this.status = status;
     this.message = infoMessage;
     this.data = data;
-    console.warn(new Date().toString() + ' - [Response]: ' + infoMessage + (data ? ' - ' + JSON.stringify(data): ''));
+    // console.warn(new Date().toString() + ' - [Response]: ' + infoMessage + (data ? ' - ' + JSON.stringify(data): ''));
   };
   message: string;
   data: any[];
@@ -25,7 +25,7 @@ export class ResponseSuccess implements IResponse{
       try {
         var offuscateRequest = JSON.parse(JSON.stringify(data));
         if(offuscateRequest && offuscateRequest.token) offuscateRequest.token = "*******";
-        console.log(new Date().toString() + ' - [Response]: ' + JSON.stringify(offuscateRequest))
+        // console.log(new Date().toString() + ' - [Response]: ' + JSON.stringify(offuscateRequest))
       } catch(error){}
     };
   };

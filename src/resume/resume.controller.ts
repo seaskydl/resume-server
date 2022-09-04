@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Req,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
@@ -42,15 +43,20 @@ export class ResumeController {
   @Post("addTemplate")
   @UseGuards(RolesGuard)
   @Roles("Admin")
-  async addTemplateJson(@Body() ResumeDto: ResumeDto): Promise<IResponse> {
+  async addTemplateJson(
+    @Body() ResumeDto: ResumeDto,
+    @Req() req
+  ): Promise<IResponse> {
     try {
-      var newTemplate = await this.resumeService.addTemplate(ResumeDto);
-      if(newTemplate){
-        return new ResponseSuccess("模板添加成功");
+      ResumeDto.USER = req.user.name;
+      ResumeDto.EMAIL = req.user.email;
+      let newTemplate = await this.resumeService.addTemplate(ResumeDto);
+      if (newTemplate) {
+        return new ResponseSuccess("模板添加成功", null);
       } else {
-        return new ResponseError('模板添加失败', null);
+        return new ResponseError("模板添加失败", null);
       }
-    } catch(error){
+    } catch (error) {
       return new ResponseError(error.message, null, error.status);
     }
   }
