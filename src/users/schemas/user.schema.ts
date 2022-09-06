@@ -1,9 +1,9 @@
-import * as mongoose from 'mongoose';
-import { PhotoSchema } from 'common/schemas/photo.schema';
+import * as mongoose from "mongoose";
+import { PhotoSchema } from "common/schemas/photo.schema";
 
 export const UserSchema = new mongoose.Schema({
   id: String,
-  date: {type: Date, default: Date.now},
+  date: { type: Date, default: Date.now },
   name: String,
   surname: String,
   email: String,
@@ -12,20 +12,24 @@ export const UserSchema = new mongoose.Schema({
   birthdaydate: Date,
   roles: [],
   auth: {
-    email : {
-      valid : { type: Boolean, default: false }
+    email: {
+      valid: { type: Boolean, default: false },
     },
     facebook: {
-      userid: String
+      userid: String,
     },
     gmail: {
-      userid: String
-    }
+      userid: String,
+    },
   },
-  settings: {
-  },
+  settings: {},
   photos: {
-    profilePic: {}, //{ type:  mongoose.Schema.Types.ObjectId , ref: 'PhotoSchema'}
-    gallery: [] //[{type:  mongoose.Schema.Types.ObjectId , ref: 'PhotoSchema'}]
-  }
+    profilePic: {
+      url: {
+        type: String,
+        default: "https://smallpig.site:9000/navigation/file-1662356569784.png",
+      },
+    }, //{ type:  mongoose.Schema.Types.ObjectId , ref: 'PhotoSchema'}
+    gallery: [], //[{type:  mongoose.Schema.Types.ObjectId , ref: 'PhotoSchema'}]
+  },
 });

@@ -9,12 +9,27 @@ import pageQuery from "common/utils/pageQuery";
 @Injectable()
 export class ResumeService {
   constructor(
-    @InjectModel("Resume") private readonly resumeModel: Model<Resume>
+    @InjectModel("Resume") private readonly resumeModel: Model<Resume>,
+    @InjectModel("Userresume") private readonly userresumeModel: Model<Resume>
   ) {}
 
   // 查询模板数据
   async findResumeById(id: string): Promise<Resume> {
     return await this.resumeModel.findOne({ ID: id }).exec();
+  }
+
+  // 根据邮箱和id查询单个简历
+  async getResumeByEmailAndId(query: { EMAIL: string; ID: string }) {
+    return new Promise(async (resolve, reject) => {
+      let resume = await this.userresumeModel
+        .findOne({ ID: query.ID, EMAIL: query.EMAIL })
+        .exec();
+      if (resume) {
+        resolve(resume);
+      } else {
+        resolve(null);
+      }
+    });
   }
 
   // 新增模板
@@ -43,9 +58,9 @@ export class ResumeService {
             return {
               ID: item.id,
               previewUrl: item.previewUrl,
-              NAME: item.NAME
-            }
-          })
+              NAME: item.NAME,
+            };
+          });
           let responseData = {
             page: {
               currentPage: $page.pageNumber,

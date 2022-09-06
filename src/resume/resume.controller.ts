@@ -30,10 +30,23 @@ export class ResumeController {
   @Get("template/:id")
   @UseGuards(RolesGuard)
   @Roles("User")
-  async getTemplateJsonById(@Param() params): Promise<IResponse> {
+  async getTemplateJsonById(@Param() params, @Req() req): Promise<IResponse> {
     try {
-      let resume = await this.resumeService.findResumeById(params.id);
-      return new ResponseSuccess("请求成功", new ResumeDto(resume));
+      // 先查询该用户是否有草稿
+      let query = {
+        EMAIL: req.user.email,
+        ID: params.id,
+      };
+      const resumeDraft = await this.resumeService.getResumeByEmailAndId(query);
+      if (resumeDraft) {
+        return new ResponseSuccess("请求成功", new ResumeDto(resumeDraft));
+      } else {
+        // 没有保存草稿则查询原始模板数据
+        let resume = await this.resumeService.findResumeById(params.id);
+        if (resume) {
+          return new ResponseSuccess("请求成功", new ResumeDto(resume));
+        }
+      }
     } catch (error) {
       return new ResponseError(error, "查询模板数据失败");
     }
@@ -58,6 +71,22 @@ export class ResumeController {
       }
     } catch (error) {
       return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "查询模板数据" })
+  @Get("templateReset/:id")
+  @UseGuards(RolesGuard)
+  @Roles("User")
+  async getResetTemplateJsonById(@Param() params): Promise<IResponse> {
+    try {
+      // 没有保存草稿则查询原始模板数据
+      let resume = await this.resumeService.findResumeById(params.id);
+      if (resume) {
+        return new ResponseSuccess("请求成功", new ResumeDto(resume));
+      }
+    } catch (error) {
+      return new ResponseError(error, "查询模板数据失败");
     }
   }
 }

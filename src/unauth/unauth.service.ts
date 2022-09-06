@@ -22,7 +22,6 @@ export class UnauthService {
         $page
       ) {
         if (error) {
-          console.log("分页查询失败");
           reject(error);
         } else {
           let list = $page.results.map((item) => {
@@ -41,7 +40,6 @@ export class UnauthService {
             },
             list: list,
           };
-          console.log("分页查询成功", responseData);
           resolve(responseData);
         }
       });

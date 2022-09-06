@@ -7,6 +7,7 @@ import { default as config } from "./config";
 import { ResumeModel } from "./resume/resume.module";
 import { UploadModule } from "upload/upload.module";
 import { UnauthModel } from "unauth/unauth.module";
+import { UserresumeModule } from "userResume/userresume.module";
 
 const userString =
   config.db.user && config.db.pass
@@ -33,6 +34,7 @@ const authSource = config.db.authSource
     ResumeModel,
     UploadModule,
     UnauthModel,
+    UserresumeModule,
   ],
   // controllers: [AppController],
   providers: [AppService],

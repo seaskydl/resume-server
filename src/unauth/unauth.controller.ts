@@ -9,11 +9,10 @@ import { UnauthService } from "./unauth.service";
 export class UnauthController {
   constructor(private readonly unauthService: UnauthService) {}
 
-  @ApiOperation({ summary: "查询所有模板列表-首页" })
+  @ApiOperation({ summary: "查询所有模板列表-不查询出详细数据" })
   @Get("getTemplateList")
   async getTemplateList(@Param() params): Promise<IResponse> {
     try {
-      console.log("queryDto", params);
       let templateList = await this.unauthService.getTemplateList(params);
       if (templateList) {
         return new ResponseSuccess("查询成功", templateList);

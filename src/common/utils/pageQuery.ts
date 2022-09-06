@@ -13,7 +13,6 @@ let pageQuery = function(
   let $page: any = {
     pageNumber: page,
   };
-  console.log($page);
   async.parallel(
     {
       count: function(done) {
@@ -37,7 +36,7 @@ let pageQuery = function(
     function(err, results) {
       let count: number = results.count;
       let isEnd = false;
-      $page.pageCount = ((count - 1) / pageSize) + 1; // 总共多少页面
+      $page.pageCount = Math.floor(((count - 1) / pageSize) + 1); // 总共多少页面
       $page.count = count; // 总共多少条
       $page.results = results.records;
       if ($page.pageNumber == $page.pageCount) {

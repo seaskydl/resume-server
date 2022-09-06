@@ -22,4 +22,11 @@ export default {
     user: "发送邮件的邮箱",
     pass: "邮箱密码", // 注意不是登录密码，具体需要到邮箱官网里面去设置，可以百度一下nojs发送邮件
   },
+  minio: {
+    endPoint: "域名",
+    port: 9000, // 端口
+    useSSL: true,
+    rootUser: "用户名",
+    rootPassword: "密码",
+  },
 };
