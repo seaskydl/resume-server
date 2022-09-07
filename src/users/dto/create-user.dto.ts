@@ -5,4 +5,5 @@ export class CreateUserDto {
   readonly phone: string;
   readonly birthdaydate: Date;
   password: string;
+  date: string;
 }

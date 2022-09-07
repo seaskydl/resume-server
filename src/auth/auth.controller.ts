@@ -10,6 +10,7 @@ import { UsersService } from '../users/users.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {default as config} from '../config';
+import { getNowDate } from 'common/utils/date';
 
 @ApiTags('用户相关接口')
 @Controller('auth')
@@ -33,6 +34,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async register(@Body() createUserDto: CreateUserDto): Promise<IResponse> {
     try {
+      createUserDto.date = getNowDate();
       var newUser = new UserDto(await this.userService.createNewUser(createUserDto));
       await this.authService.createEmailToken(newUser.email);
       //await this.authService.saveUserConsent(newUser.email); //[GDPR user content]
