@@ -10,7 +10,6 @@ export class UserDto {
     this.birthdaydate = object.birthdaydate;
     this.date = object.date;
     this.settings = new SettingsDto(object.settings);
-    // console.log("object.auth", object.auth.email.valid);
     this.auth = {
       email: {
         valid: object.auth.email.valid,

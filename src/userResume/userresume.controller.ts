@@ -78,8 +78,8 @@ export class UserresumeController {
     try {
       let query = {
         EMAIL: req.user.email,
-        page: Number(params.page) | 1,
-        limit: Number(params.limit) | 6,
+        page: Number(params.page) || 1,
+        limit: Number(params.limit) || 6,
       };
       console.log("query", query);
       let resume = await this.userresumeService.getUserResumeByEmail(query);

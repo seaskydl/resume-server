@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
   UseInterceptors,
@@ -80,11 +81,9 @@ export class ResumeController {
   @Put("updateTemplate")
   @UseGuards(RolesGuard)
   @Roles("Admin")
-  async updateTemplateJson(
-    @Body() ResumeDto: ResumeDto,
-  ): Promise<IResponse> {
+  async updateTemplateJson(@Body() ResumeDto: ResumeDto): Promise<IResponse> {
     try {
-      console.log("请求参数",ResumeDto)
+      console.log("请求参数", ResumeDto);
       let updateTemplate = await this.resumeService.updateTemplate(ResumeDto);
       if (updateTemplate) {
         return new ResponseSuccess("模板更新成功", null);
@@ -100,12 +99,12 @@ export class ResumeController {
   @Delete("deleteTemplate/:id")
   @UseGuards(RolesGuard)
   @Roles("Admin")
-  async deleteTemplateJson(
-    @Param() params,
-  ): Promise<IResponse> {
+  async deleteTemplateJson(@Param() params): Promise<IResponse> {
     try {
-      console.log("请求参数", params)
-      let deleteTemplate = await this.resumeService.deleteTemplateById(params.id);
+      console.log("请求参数", params);
+      let deleteTemplate = await this.resumeService.deleteTemplateById(
+        params.id
+      );
       if (deleteTemplate) {
         return new ResponseSuccess("模板删除成功", null);
       } else {
@@ -136,11 +135,11 @@ export class ResumeController {
   @Get("templateListAll")
   @UseGuards(RolesGuard)
   @Roles("User")
-  async getTemplateListAll(@Param() params): Promise<IResponse> {
+  async getTemplateListAll(@Query() params): Promise<IResponse> {
     try {
       let query = {
-        page: Number(params.page) | 1,
-        limit: Number(params.limit) | 10,
+        page: Number(params.page) || 1,
+        limit: Number(params.limit) || 10,
       };
       let resume = await this.resumeService.getTemplateListAll(query);
       if (resume) {

@@ -8,6 +8,7 @@ import {
   UseGuards,
   UseInterceptors,
   Param,
+  Query,
 } from '@nestjs/common';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
@@ -76,6 +77,25 @@ export class UsersController {
       return new ResponseSuccess("SETTINGS.UPDATE_SUCCESS", new UserDto(user));
     } catch(error){
       return new ResponseError("SETTINGS.UPDATE_ERROR", error);
+    }
+  }
+
+  @ApiOperation({ summary: '查询用户列表'})
+  @Get('getAllUser')
+  @UseGuards(RolesGuard)
+  @Roles('Admin')
+  async getAllUserList(@Query() params): Promise<IResponse>{
+    try {
+      console.log(params)
+      let query = {
+        page: Number(params.page) || 1,
+        limit: Number(params.limit) || 10,
+      };
+      console.log("查询参数query",query)
+      var user =  await this.usersService.getAllUserList(query);
+      return new ResponseSuccess("请求成功", user);
+    } catch(error){
+      return new ResponseError(error.message, null, error.status);
     }
   }
   
