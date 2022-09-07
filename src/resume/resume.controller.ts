@@ -89,4 +89,23 @@ export class ResumeController {
       return new ResponseError(error, "查询模板数据失败");
     }
   }
+
+  @ApiOperation({ summary: "查询模板列表全部数据" })
+  @Get("templateListAll")
+  @UseGuards(RolesGuard)
+  @Roles("User")
+  async getTemplateListAll(@Param() params): Promise<IResponse> {
+    try {
+      let query = {
+        page: Number(params.page) | 1,
+        limit: Number(params.limit) | 10,
+      };
+      let resume = await this.resumeService.getTemplateListAll(query);
+      if (resume) {
+        return new ResponseSuccess("请求成功", resume);
+      }
+    } catch (error) {
+      return new ResponseError(error, "查询模板数据失败");
+    }
+  }
 }

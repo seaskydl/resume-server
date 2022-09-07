@@ -5,6 +5,7 @@ import { Model } from "mongoose";
 import { ResumeDto } from "./dto/resume.dto";
 import { QueryDto } from "./dto/query.dto";
 import pageQuery from "common/utils/pageQuery";
+import { getNowDate } from "common/utils/date";
 
 @Injectable()
 export class ResumeService {
@@ -69,6 +70,33 @@ export class ResumeService {
               isEnd: $page.isEnd,
             },
             list: list,
+          };
+          resolve(responseData);
+        }
+      });
+    });
+  }
+
+  // 查询模板列表所有数据
+  async getTemplateListAll(queryDto: QueryDto) {
+    return new Promise(async (resolve, reject) => {
+      let page = Number(queryDto.page) || 1; // 查询页码
+      let limit = Number(queryDto.limit) || 10; // 查询条数
+      pageQuery(page, limit, this.resumeModel, "", {}, {}, function(
+        error,
+        $page
+      ) {
+        if (error) {
+          reject(error);
+        } else {
+          let responseData = {
+            page: {
+              currentPage: $page.pageNumber,
+              pageCount: $page.pageCount,
+              count: $page.count,
+              isEnd: $page.isEnd,
+            },
+            list: $page.results,
           };
           resolve(responseData);
         }

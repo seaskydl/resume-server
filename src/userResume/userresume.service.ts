@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import { getNowDate } from "common/utils/date";
 import pageQuery from "common/utils/pageQuery";
 import { Model } from "mongoose";
 import { Resume } from "resume/interfaces/resume.interface";

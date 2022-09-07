@@ -1,10 +1,11 @@
 import * as mongoose from "mongoose"
+const moment = require("moment");
 
 export const ResumeSchema = new mongoose.Schema({
   USER: String, // 模板创建人
   EMAIL: String, // 创建人邮箱
-  createDate: {type: Date, default: Date.now}, // 创建时间
-  updateDate: {type: Date, default: Date.now}, // 更新时间
+  createDate: {type: String, default: moment().format("YYYY-MM-DD HH:mm:ss")}, // 创建时间
+  updateDate: {type: String, default: moment().format("YYYY-MM-DD HH:mm:ss")}, // 更新时间
   previewUrl: String, // 模板预览图链接
   ID: String,
   NAME: String,

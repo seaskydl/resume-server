@@ -1,9 +1,10 @@
+import { getNowDate } from "common/utils/date";
 import { ComponentDto } from "../../resume/dto/component.dto";
 import { GlobalStyleDto } from "../../resume/dto/globalStyle.dto";
 
 export class UserResumeDto {
   EMAIL: string; // 创建人邮箱
-  updateDate: Date;
+  updateDate: string;
   readonly previewUrl: string; // 模板预览图链接
   readonly ID: string;
   readonly NAME: string;
@@ -24,7 +25,7 @@ export class UserResumeDto {
       });
     }
     this.EMAIL = object.EMAIL;
-    this.updateDate = new Date();
+    this.updateDate = getNowDate();
     this.previewUrl = object.previewUrl;
   }
 }

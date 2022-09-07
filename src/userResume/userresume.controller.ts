@@ -16,6 +16,7 @@ import { RolesGuard } from "common/guards/roles.guard";
 import { LoggingInterceptor } from "common/interceptors/logging.interceptor";
 import { TransformInterceptor } from "common/interceptors/transform.interceptor";
 import { IResponse } from "common/interfaces/response.interface";
+import { getNowDate } from "common/utils/date";
 import { UserResumeDto } from "./dto/userresume.dto";
 import { UserresumeService } from "./userresume.service";
 
@@ -36,7 +37,7 @@ export class UserresumeController {
   ): Promise<IResponse> {
     try {
       userResumeDto.EMAIL = req.user.email;
-      userResumeDto.updateDate = new Date();
+      userResumeDto.updateDate = getNowDate();
       let resume = await this.userresumeService.updateUserResumeByEmail(
         userResumeDto
       );
@@ -80,7 +81,7 @@ export class UserresumeController {
         page: Number(params.page) | 1,
         limit: Number(params.limit) | 6,
       };
-      console.log("query",query)
+      console.log("query", query);
       let resume = await this.userresumeService.getUserResumeByEmail(query);
       if (resume) {
         return new ResponseSuccess("查询成功", resume);

@@ -1,9 +1,10 @@
 import * as mongoose from "mongoose";
 import { PhotoSchema } from "common/schemas/photo.schema";
+const moment = require("moment");
 
 export const UserSchema = new mongoose.Schema({
   id: String,
-  date: { type: Date, default: Date.now },
+  date: { type: String, default: moment().format("YYYY-MM-DD HH:mm:ss") },
   name: String,
   surname: String,
   email: String,

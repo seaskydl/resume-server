@@ -1,10 +1,11 @@
+import { getNowDate } from "common/utils/date";
 import { ComponentDto } from "./component.dto";
 import { GlobalStyleDto } from "./globalStyle.dto";
 
 export class ResumeDto {
   USER: string; // 模板创建人
   EMAIL: string; // 创建人邮箱
-  readonly updateDate: Date;
+  readonly updateDate: string;
   readonly previewUrl: string; // 模板预览图链接
   readonly ID: string;
   readonly NAME: string;
@@ -27,6 +28,6 @@ export class ResumeDto {
     this.USER = object.USER;
     this.EMAIL = object.EMAIL;
     this.previewUrl = object.previewUrl;
-    this.updateDate = new Date();
+    this.updateDate = getNowDate();
   }
 }
