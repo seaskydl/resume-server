@@ -89,7 +89,7 @@ export class ResumeController {
       if (updateTemplate) {
         return new ResponseSuccess("模板更新成功", null);
       } else {
-        return new ResponseError("模板添加失败", null);
+        return new ResponseError("模板更新失败", null);
       }
     } catch (error) {
       return new ResponseError(error.message, null, error.status);
