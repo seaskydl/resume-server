@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
+  Put,
   Req,
   UseGuards,
   UseInterceptors,
@@ -66,6 +68,46 @@ export class ResumeController {
       let newTemplate = await this.resumeService.addTemplate(ResumeDto);
       if (newTemplate) {
         return new ResponseSuccess("模板添加成功", null);
+      } else {
+        return new ResponseError("模板添加失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "更新模板" })
+  @Put("updateTemplate")
+  @UseGuards(RolesGuard)
+  @Roles("Admin")
+  async updateTemplateJson(
+    @Body() ResumeDto: ResumeDto,
+  ): Promise<IResponse> {
+    try {
+      console.log("请求参数",ResumeDto)
+      let updateTemplate = await this.resumeService.updateTemplate(ResumeDto);
+      if (updateTemplate) {
+        return new ResponseSuccess("模板更新成功", null);
+      } else {
+        return new ResponseError("模板添加失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "删除模板" })
+  @Delete("deleteTemplate/:id")
+  @UseGuards(RolesGuard)
+  @Roles("Admin")
+  async deleteTemplateJson(
+    @Param() params,
+  ): Promise<IResponse> {
+    try {
+      console.log("请求参数", params)
+      let deleteTemplate = await this.resumeService.deleteTemplateById(params.id);
+      if (deleteTemplate) {
+        return new ResponseSuccess("模板删除成功", null);
       } else {
         return new ResponseError("模板添加失败", null);
       }
