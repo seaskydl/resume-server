@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   Param,
   Query,
+  Delete,
 } from '@nestjs/common';
 import { UserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
@@ -94,6 +95,42 @@ export class UsersController {
       console.log("查询参数query",query)
       var user =  await this.usersService.getAllUserList(query);
       return new ResponseSuccess("请求成功", user);
+    } catch(error){
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: '管理员更新用户信息'})
+  @Post('updateUserInfo')
+  @UseGuards(RolesGuard)
+  @Roles('Admin')
+  async updateUserInfoByAdmin(@Body() params): Promise<IResponse>{
+    try {
+      console.log("更新用户信息",params)
+      var user =  await this.usersService.updateUserInfoByAdmin(params);
+      if (user) {
+        return new ResponseSuccess("更新成功", null);
+      } else {
+        return new ResponseError("更新失败", null);
+      }
+    } catch(error){
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: '管理员更新用户信息'})
+  @Delete('deleteUser/:email')
+  @UseGuards(RolesGuard)
+  @Roles('Admin')
+  async deleteUserByAdmin(@Param() params): Promise<IResponse>{
+    try {
+      console.log("删除用户",params)
+      var user =  await this.usersService.deleteUserByAdmin(params.email);
+      if (user) {
+        return new ResponseSuccess("更新成功", null);
+      } else {
+        return new ResponseError("更新失败", null);
+      }
     } catch(error){
       return new ResponseError(error.message, null, error.status);
     }

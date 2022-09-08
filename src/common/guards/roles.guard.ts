@@ -14,14 +14,14 @@ export class RolesGuard implements CanActivate {
 
     const req = context.switchToHttp().getRequest();
     const user = req.user;
-    // console.log("req",user)
     const hasRole = () => user.roles.some((role) => roles.indexOf(role)> -1);
     var hasPermission = false;
 
     if(hasRole()){
       hasPermission = true;
       if(req.params.email || req.body.email) {
-        if(req.user.email != req.params.email && req.user.email != req.body.email){ 
+        // 如果非管理员角色，则不允许访问
+        if(req.user.email != req.params.email && req.user.email != req.body.email && req.user.roles.indexOf('Admin') === -1){ 
               hasPermission = false;
         }
       }

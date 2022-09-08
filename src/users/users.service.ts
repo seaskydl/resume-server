@@ -12,6 +12,7 @@ import * as _ from "lodash";
 import pageQuery from "common/utils/pageQuery";
 import { QueryDto } from "resume/dto/query.dto";
 import { UserDto } from "./dto/user.dto";
+import { getNowDate } from "common/utils/date";
 
 const saltRounds = 10;
 
@@ -231,6 +232,7 @@ export class UsersService {
     return userFromDb;
   }
 
+  // 获取所有用户列表
   async getAllUserList(queryDto: QueryDto) {
     return new Promise(async (resolve, reject) => {
       let page = Number(queryDto.page) || 1; // 查询页码
@@ -260,5 +262,45 @@ export class UsersService {
         }
       });
     });
+  }
+
+  // 管理员更新用户信息
+  async updateUserInfoByAdmin(params: any) {
+    let userData = await this.userModel.findOne({ email: params.email });
+    if (!userData) {
+      throw new HttpException("该用户不存在", HttpStatus.NOT_FOUND);
+    }
+    let updateDate = getNowDate();
+    return await this.userModel.updateOne(
+      { email: params.email },
+      {
+        $set: {
+          name: params.name,
+          email: params.email,
+          auth: {
+            email: {
+              valid: params.valid,
+            },
+          },
+          photos: {
+            gallery: [],
+            profilePic: {
+              url: params.profilePic,
+            },
+          },
+          roles: params.roles,
+          updateDate: updateDate,
+        },
+      }
+    );
+  }
+
+  // 管理员删除用户
+  async deleteUserByAdmin(email: string) {
+    let userData = await this.userModel.findOne({ email: email });
+    if (!userData) {
+      throw new HttpException("用户不存在", HttpStatus.NOT_FOUND);
+    }
+    return await this.userModel.deleteOne({ email: email });
   }
 }

@@ -5,6 +5,7 @@ const moment = require("moment");
 export const UserSchema = new mongoose.Schema({
   id: String,
   date: { type: String, default: moment().format("YYYY-MM-DD HH:mm:ss") },
+  updateDate: { type: String, default: moment().format("YYYY-MM-DD HH:mm:ss") },
   name: String,
   surname: String,
   email: String,

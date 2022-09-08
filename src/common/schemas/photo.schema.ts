@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+const moment = require('moment')
 
 export const PhotoSchema = new mongoose.Schema({
   url: String,
