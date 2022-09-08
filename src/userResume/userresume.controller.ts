@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
   UseInterceptors,
@@ -74,14 +75,13 @@ export class UserresumeController {
   @Get("templateList")
   @UseGuards(RolesGuard)
   @Roles("User")
-  async getUserResumeList(@Param() params, @Req() req): Promise<IResponse> {
+  async getUserResumeList(@Query() params, @Req() req): Promise<IResponse> {
     try {
       let query = {
         EMAIL: req.user.email,
         page: Number(params.page) || 1,
         limit: Number(params.limit) || 6,
       };
-      console.log("query", query);
       let resume = await this.userresumeService.getUserResumeByEmail(query);
       if (resume) {
         return new ResponseSuccess("查询成功", resume);
