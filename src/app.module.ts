@@ -8,6 +8,7 @@ import { ResumeModel } from "./resume/resume.module";
 import { UploadModule } from "upload/upload.module";
 import { UnauthModel } from "unauth/unauth.module";
 import { UserresumeModule } from "userResume/userresume.module";
+import { PuppeteerModule } from "puppeteer/puppeteer.module";
 
 const userString =
   config.db.user && config.db.pass
@@ -35,6 +36,7 @@ const authSource = config.db.authSource
     UploadModule,
     UnauthModel,
     UserresumeModule,
+    PuppeteerModule
   ],
   // controllers: [AppController],
   providers: [AppService],
