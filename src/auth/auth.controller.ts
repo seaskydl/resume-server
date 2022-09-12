@@ -34,7 +34,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async register(@Body() createUserDto: CreateUserDto): Promise<IResponse> {
     try {
-      createUserDto.date = getNowDate();
       var newUser = new UserDto(await this.userService.createNewUser(createUserDto));
       await this.authService.createEmailToken(newUser.email);
       //await this.authService.saveUserConsent(newUser.email); //[GDPR user content]

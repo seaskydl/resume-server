@@ -4,7 +4,6 @@ import { GlobalStyleDto } from "../../resume/dto/globalStyle.dto";
 
 export class UserResumeDto {
   EMAIL: string; // 创建人邮箱
-  updateDate: string;
   readonly previewUrl: string; // 模板预览图链接
   readonly ID: string;
   readonly NAME: string;
@@ -25,7 +24,6 @@ export class UserResumeDto {
       });
     }
     this.EMAIL = object.EMAIL;
-    this.updateDate = getNowDate();
     this.previewUrl = object.previewUrl;
   }
 }

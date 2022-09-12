@@ -270,7 +270,6 @@ export class UsersService {
     if (!userData) {
       throw new HttpException("该用户不存在", HttpStatus.NOT_FOUND);
     }
-    let updateDate = getNowDate();
     return await this.userModel.updateOne(
       { email: params.email },
       {
@@ -289,7 +288,6 @@ export class UsersService {
             },
           },
           roles: params.roles,
-          updateDate: updateDate,
         },
       }
     );

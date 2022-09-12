@@ -8,7 +8,8 @@ export class UserDto {
     this.email = object.email;
     this.phone = object.phone;
     this.birthdaydate = object.birthdaydate;
-    this.date = object.date;
+    this.createDate = object.createDate;
+    this.updateDate = object.updateDate || object.createDate;
     this.settings = new SettingsDto(object.settings);
     this.auth = {
       email: {
@@ -37,7 +38,8 @@ export class UserDto {
   readonly email: string;
   readonly phone: string;
   readonly birthdaydate: Date;
-  date: string;
+  createDate: Date;
+  updateDate: Date;
   roles: Array<string>;
   auth: {
     email: {

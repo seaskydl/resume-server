@@ -38,7 +38,6 @@ export class UserresumeController {
   ): Promise<IResponse> {
     try {
       userResumeDto.EMAIL = req.user.email;
-      userResumeDto.updateDate = getNowDate();
       let resume = await this.userresumeService.updateUserResumeByEmail(
         userResumeDto
       );

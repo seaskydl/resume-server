@@ -50,12 +50,10 @@ export class ResumeService {
     if (!resumeData) {
       throw new HttpException("模板ID不存在", HttpStatus.NOT_FOUND);
     }
-    let updateDate = getNowDate();
     return await this.resumeModel.updateOne(
       { ID: templateData.ID },
       {
         $set: {
-          updateDate: updateDate,
           USER: templateData.USER,
           EMAIL: templateData.EMAIL,
           previewUrl: templateData.previewUrl,
