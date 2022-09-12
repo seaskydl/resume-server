@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Param,
   Post,
   Req,
   UploadedFile,
@@ -29,7 +30,7 @@ export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
   @ApiOperation({ summary: "上传文件" })
-  @Post("file")
+  @Post("file/:path")
   @UseInterceptors(
     FileInterceptor("file", {
       storage: multer.diskStorage({
@@ -48,10 +49,14 @@ export class UploadController {
   )
   @UseGuards(RolesGuard)
   @Roles("User", "Admin")
-  async findById(@UploadedFile() file, @Req() req): Promise<IResponse> {
+  async findById(
+    @UploadedFile() file,
+    @Req() req,
+    @Param() params
+  ): Promise<IResponse> {
     try {
       // console.log(file, req);
-      var uploadData = await this.uploadService.upload(req);
+      var uploadData = await this.uploadService.upload(req, params.path);
       return new ResponseSuccess("上传成功", uploadData);
     } catch (error) {
       return new ResponseError(error.message, null, error.status);

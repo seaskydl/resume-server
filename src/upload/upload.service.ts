@@ -8,7 +8,7 @@ import config from "config";
 @Injectable()
 export class UploadService {
   // 上传文件
-  async upload(req): Promise<any> {
+  async upload(req, path: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       // minio上传文件
       let minioClient = new Minio.Client({
@@ -28,8 +28,8 @@ export class UploadService {
       console.log(req.file);
       // 上传文件
       minioClient.fPutObject(
-        "navigation",
-        req.file.filename,
+        `resume`,
+        `/${path}/${req.file.filename}`,
         file,
         metaData,
         (err, etag) => {
@@ -40,7 +40,7 @@ export class UploadService {
             let responseData = {
               fileName: req.file.originalname,
               fileUrl:
-                "https://smallpig.site:9000/navigation/" + req.file.filename,
+                `https://smallpig.site:9000/resume/${path}/` + req.file.filename,
               fileSize: req.file.size,
             };
             delDir(fullPath); // 删除本地临时文件夹
