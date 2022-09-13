@@ -9,6 +9,7 @@ import { UploadModule } from "upload/upload.module";
 import { UnauthModel } from "unauth/unauth.module";
 import { UserresumeModule } from "userResume/userresume.module";
 import { PuppeteerModule } from "puppeteer/puppeteer.module";
+import { PanelModule } from "panel/panel.module";
 
 const userString =
   config.db.user && config.db.pass
@@ -36,7 +37,8 @@ const authSource = config.db.authSource
     UploadModule,
     UnauthModel,
     UserresumeModule,
-    PuppeteerModule
+    PuppeteerModule,
+    PanelModule,
   ],
   // controllers: [AppController],
   providers: [AppService],
