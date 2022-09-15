@@ -12,6 +12,7 @@ export class ResumeDto {
   readonly LAYOUT: string;
   COMPONENTS: ComponentDto[];
   GLOBAL_STYLE: GlobalStyleDto;
+  CATEGORY: Array<string>; // 简历分类
   constructor(object: any) {
     this.ID = object.ID;
     this.NAME = object.NAME;
@@ -27,5 +28,11 @@ export class ResumeDto {
     this.USER = object.USER;
     this.EMAIL = object.EMAIL;
     this.previewUrl = object.previewUrl;
+    this.CATEGORY = [];
+    if(object.CATEGORY) {
+      object.CATEGORY.forEach((item) => {
+        this.CATEGORY.push(item);
+      });
+    }
   }
 }

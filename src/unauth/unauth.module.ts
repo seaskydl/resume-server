@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { CategorySchema } from "category/schemas/category.schema";
 import { LoggerMiddleware } from "common/middlewares/logger.middleware";
 import { ResumeSchema } from "resume/schemas/resume.schema";
 import { SponsorSchema } from "./schemas/sponsor.schemas";
@@ -10,6 +11,7 @@ import { UnauthService } from "./unauth.service";
   imports: [
     MongooseModule.forFeature([{ name: "Resume", schema: ResumeSchema }]),
     MongooseModule.forFeature([{ name: "Sponsor", schema: SponsorSchema }]),
+    MongooseModule.forFeature([{ name: "Category", schema: CategorySchema }]),
   ],
   controllers: [UnauthController],
   providers: [UnauthService],

@@ -10,6 +10,7 @@ import { UnauthModel } from "unauth/unauth.module";
 import { UserresumeModule } from "userResume/userresume.module";
 import { PuppeteerModule } from "puppeteer/puppeteer.module";
 import { PanelModule } from "panel/panel.module";
+import { CategoryModule } from "category/category.module";
 
 const userString =
   config.db.user && config.db.pass
@@ -39,6 +40,7 @@ const authSource = config.db.authSource
     UserresumeModule,
     PuppeteerModule,
     PanelModule,
+    CategoryModule,
   ],
   // controllers: [AppController],
   providers: [AppService],

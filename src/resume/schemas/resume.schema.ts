@@ -11,6 +11,7 @@ export const ResumeSchema = new mongoose.Schema(
     TITLE: String,
     LAYOUT: String,
     COMPONENTS: Array,
+    CATEGORY: Array, // 简历风格
     GLOBAL_STYLE: {
       themeColor: String, // 主题色
       firstTitleFontSize: String, // 一级标题

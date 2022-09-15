@@ -5,21 +5,31 @@ import { Model } from "mongoose";
 import { QueryDto } from "../resume/dto/query.dto";
 import pageQuery from "common/utils/pageQuery";
 import { Sponsor } from "./interfaces/sponsor.interface";
+import { Category } from "category/interface/category.interface";
 
 @Injectable()
 export class UnauthService {
   constructor(
     @InjectModel("Resume") private readonly resumeModel: Model<Resume>,
-    @InjectModel("Sponsor") private readonly sponsorModel: Model<Sponsor>
+    @InjectModel("Sponsor") private readonly sponsorModel: Model<Sponsor>,
+    @InjectModel("Category") private readonly CategoryModel: Model<Category>
   ) {}
 
   // 查询模板列表
-  async getTemplateList(queryDto: QueryDto) {
+  async getTemplateList(queryDto) {
     return new Promise(async (resolve, reject) => {
       let page = Number(queryDto.page) || 1; // 查询页码
       let limit = Number(queryDto.limit) || 10; // 查询条数
+      let queryParams;
+      if (queryDto.category) {
+        queryParams = {
+          CATEGORY: { $elemMatch: { $eq: queryDto.category } },
+        };
+      } else {
+        queryParams = {};
+      }
       console.log("查询参数", page, limit);
-      pageQuery(page, limit, this.resumeModel, "", {}, {}, function(
+      pageQuery(page, limit, this.resumeModel, "", queryParams, {}, function(
         error,
         $page
       ) {
@@ -84,5 +94,10 @@ export class UnauthService {
   async addSponsor(sponsorData) {
     let newSponsor = new this.sponsorModel(sponsorData);
     return await newSponsor.save();
+  }
+
+  // 查询简历分类
+  async getCategoryList(): Promise<any> {
+    return await this.CategoryModel.find({});
   }
 }

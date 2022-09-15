@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { CategoryService } from "category/category.service";
 import { ResponseError, ResponseSuccess } from "common/dto/response.dto";
 import { IResponse } from "common/interfaces/response.interface";
 import { UnauthService } from "./unauth.service";
@@ -46,6 +47,21 @@ export class UnauthController {
       let sponsorList = await this.unauthService.getSponsorList(query);
       if (sponsorList) {
         return new ResponseSuccess("查询成功", sponsorList);
+      } else {
+        return new ResponseError("查询失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "查询简历分类列表" })
+  @Get("getCategoryList")
+  async getCategoryList(): Promise<IResponse> {
+    try {
+      let categoryList = await this.unauthService.getCategoryList();
+      if (categoryList) {
+        return new ResponseSuccess("查询成功", categoryList);
       } else {
         return new ResponseError("查询失败", null);
       }

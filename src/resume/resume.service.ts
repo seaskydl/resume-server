@@ -62,6 +62,7 @@ export class ResumeService {
           LAYOUT: templateData.LAYOUT,
           COMPONENTS: templateData.COMPONENTS,
           GLOBAL_STYLE: templateData.GLOBAL_STYLE,
+          CATEGORY: templateData.CATEGORY,
         },
       }
     );
