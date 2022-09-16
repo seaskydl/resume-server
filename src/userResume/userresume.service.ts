@@ -38,6 +38,18 @@ export class UserresumeService {
     }
   }
 
+  // 根据邮箱和id删除用户简历
+  async deleteUserResumeByEmailAndId(ID: string, email: string) {
+    let resume = await this.userresumeModel
+      .findOneAndDelete({ ID: ID, EMAIL: email })
+      .exec();
+    if (resume) {
+      return resume;
+    } else {
+      throw new HttpException("删除失败", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   // 查询简历列表
   async getUserResumeByEmail(query: {
     EMAIL: string;

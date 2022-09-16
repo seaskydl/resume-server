@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -84,6 +85,29 @@ export class UserresumeController {
       let resume = await this.userresumeService.getUserResumeByEmail(query);
       if (resume) {
         return new ResponseSuccess("查询成功", resume);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "删除用户简历" })
+  @Delete("deleteResume/:id")
+  @UseGuards(RolesGuard)
+  @Roles("User")
+  async ddeleteUserResume(@Param() params, @Req() req): Promise<IResponse> {
+    try {
+      let ID = params.id;
+      let email = req.user.email;
+      if (!ID || !email) {
+        return new ResponseError("参数错误", null);
+      }
+      let resume = await this.userresumeService.deleteUserResumeByEmailAndId(
+        ID,
+        email
+      );
+      if (resume) {
+        return new ResponseSuccess("删除成功", null);
       }
     } catch (error) {
       return new ResponseError(error.message, null, error.status);
