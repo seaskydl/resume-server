@@ -3,12 +3,14 @@ const moment = require("moment");
 export const UserresumeSchema = new mongoose.Schema(
   {
     EMAIL: String, // 简历所属人
+    USER: String, // 简历用户昵称
     previewUrl: String, // 模板预览图链接
     ID: String,
     NAME: String,
     TITLE: String,
     LAYOUT: String,
     COMPONENTS: Array,
+    CATEGORY: Array, // 简历风格
     GLOBAL_STYLE: {
       themeColor: String, // 主题色
       firstTitleFontSize: String, // 一级标题

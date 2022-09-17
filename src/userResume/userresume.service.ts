@@ -94,4 +94,52 @@ export class UserresumeService {
       );
     });
   }
+
+  // 管理员查询简历列表
+  async getAllUserResumeList(query) {
+    return new Promise(async (resolve, reject) => {
+      let page = Number(query.page) || 1; // 查询页码
+      let limit = Number(query.limit) || 10; // 查询条数
+      let queryParams: any = {};
+      if (query.EMAIL) {
+        queryParams.EMAIL = query.EMAIL;
+      }
+      if (query.ID) {
+        queryParams.ID = query.ID;
+      }
+      pageQuery(
+        page,
+        limit,
+        this.userresumeModel,
+        "",
+        queryParams,
+        {},
+        function(error, $page) {
+          if (error) {
+            reject(error);
+          } else {
+            let responseData = {
+              page: {
+                currentPage: $page.pageNumber,
+                pageCount: $page.pageCount,
+                count: $page.count,
+                isEnd: $page.isEnd,
+              },
+              list: $page.results,
+            };
+            resolve(responseData);
+          }
+        }
+      );
+    });
+  }
+
+  // 管理员删除简历
+  async deleteUserResumeByAdmin(EMAIL: string, ID: string) {
+    let userResume = await this.userresumeModel.findOne({ EMAIL: EMAIL, ID: ID });
+    if (!userResume) {
+      throw new HttpException("简历不存在", HttpStatus.NOT_FOUND);
+    }
+    return await this.userresumeModel.deleteOne({ EMAIL: EMAIL, ID: ID });
+  }
 }

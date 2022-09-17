@@ -118,7 +118,7 @@ export class UsersController {
     }
   }
 
-  @ApiOperation({ summary: '管理员更新用户信息'})
+  @ApiOperation({ summary: '管理员删除用户'})
   @Delete('deleteUser/:email')
   @UseGuards(RolesGuard)
   @Roles('Admin')

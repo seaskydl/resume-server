@@ -18,7 +18,6 @@ import { RolesGuard } from "common/guards/roles.guard";
 import { LoggingInterceptor } from "common/interceptors/logging.interceptor";
 import { TransformInterceptor } from "common/interceptors/transform.interceptor";
 import { IResponse } from "common/interfaces/response.interface";
-import { getNowDate } from "common/utils/date";
 import { UserResumeDto } from "./dto/userresume.dto";
 import { UserresumeService } from "./userresume.service";
 
@@ -38,7 +37,9 @@ export class UserresumeController {
     @Req() req
   ): Promise<IResponse> {
     try {
+      userResumeDto.USER = req.user.name;
       userResumeDto.EMAIL = req.user.email;
+      console.log("userResumeDto.USER", userResumeDto.USER);
       let resume = await this.userresumeService.updateUserResumeByEmail(
         userResumeDto
       );
@@ -107,6 +108,41 @@ export class UserresumeController {
         email
       );
       if (resume) {
+        return new ResponseSuccess("删除成功", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "管理员查询用户简历列表" })
+  @Get("getAllUserResumeList")
+  @UseGuards(RolesGuard)
+  @Roles("Admin")
+  async getAllUserResumeList(@Query() query): Promise<IResponse> {
+    try {
+      let resumeList = await this.userresumeService.getAllUserResumeList(query);
+      if (resumeList) {
+        return new ResponseSuccess("查询成功", resumeList);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "管理员删除用户简历" })
+  @Delete("deleteUserResume")
+  @UseGuards(RolesGuard)
+  @Roles("Admin")
+  async deleteUserResume(@Query() query): Promise<IResponse> {
+    try {
+      let EMAIL = query.EMAIL;
+      let ID = query.ID;
+      let userResume = await this.userresumeService.deleteUserResumeByAdmin(
+        EMAIL,
+        ID
+      );
+      if (userResume) {
         return new ResponseSuccess("删除成功", null);
       }
     } catch (error) {

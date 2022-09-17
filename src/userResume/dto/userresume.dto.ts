@@ -4,6 +4,7 @@ import { GlobalStyleDto } from "../../resume/dto/globalStyle.dto";
 
 export class UserResumeDto {
   EMAIL: string; // 创建人邮箱
+  USER: String; // 简历用户昵称
   readonly previewUrl: string; // 模板预览图链接
   readonly ID: string;
   readonly NAME: string;
@@ -11,6 +12,7 @@ export class UserResumeDto {
   readonly LAYOUT: string;
   COMPONENTS: ComponentDto[];
   GLOBAL_STYLE: GlobalStyleDto;
+  CATEGORY: Array<any>; // 简历风格
   constructor(object: any) {
     this.ID = object.ID;
     this.NAME = object.NAME;
@@ -23,7 +25,14 @@ export class UserResumeDto {
         this.COMPONENTS.push(new ComponentDto(item));
       });
     }
+    this.CATEGORY = [];
+    if (object.CATEGORY) {
+      object.CATEGORY.forEach((item) => {
+        this.CATEGORY.push(item);
+      });
+    }
     this.EMAIL = object.EMAIL;
+    this.USER = object.USER;
     this.previewUrl = object.previewUrl;
   }
 }
