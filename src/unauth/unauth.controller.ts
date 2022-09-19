@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { ResponseError, ResponseSuccess } from "common/dto/response.dto";
 import { IResponse } from "common/interfaces/response.interface";
+import { IpAddress } from "common/requestip/getip.request";
 import { UnauthService } from "./unauth.service";
 
 @ApiTags("无需权限的相关接口")
@@ -59,6 +60,22 @@ export class UnauthController {
   async getCategoryList(): Promise<IResponse> {
     try {
       let categoryList = await this.unauthService.getCategoryList();
+      if (categoryList) {
+        return new ResponseSuccess("查询成功", categoryList);
+      } else {
+        return new ResponseError("查询失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "获取网站统计数据" })
+  @Get("getWebAnalycData")
+  async getWebAnalycData(@IpAddress() clinetIp: string): Promise<IResponse> {
+    try {
+      console.log('clinetIp',clinetIp)
+      let categoryList = await this.unauthService.getWebAnalycData();
       if (categoryList) {
         return new ResponseSuccess("查询成功", categoryList);
       } else {

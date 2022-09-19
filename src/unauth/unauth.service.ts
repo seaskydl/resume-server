@@ -7,6 +7,7 @@ import pageQuery from "common/utils/pageQuery";
 import { Sponsor } from "./interfaces/sponsor.interface";
 import { Category } from "category/interface/category.interface";
 import { Resumeactive } from "resumeactive/interfaces/resumeactive.interface";
+import { User } from "users/interfaces/user.interface";
 
 @Injectable()
 export class UnauthService {
@@ -14,8 +15,10 @@ export class UnauthService {
     @InjectModel("Resume") private readonly resumeModel: Model<Resume>,
     @InjectModel("Sponsor") private readonly sponsorModel: Model<Sponsor>,
     @InjectModel("Category") private readonly CategoryModel: Model<Category>,
+    @InjectModel("Userresume") private readonly userresumeModel: Model<Resume>,
     @InjectModel("Resumeactive")
-    private readonly resumeactiveModel: Model<Resumeactive>
+    private readonly resumeactiveModel: Model<Resumeactive>,
+    @InjectModel("User") private readonly userModel: Model<User>
   ) {}
 
   // 查询模板列表
@@ -124,5 +127,22 @@ export class UnauthService {
   // 查询简历分类
   async getCategoryList(): Promise<any> {
     return await this.CategoryModel.find({});
+  }
+
+  // 获取网站统计数据
+  async getWebAnalycData(): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const usernumber = await this.userModel.find().count(); // 用户数
+      const resumenumber = await this.userresumeModel.find().count(); // 制作简历数
+      if (usernumber) {
+        let webData = {
+          usernumber: usernumber,
+          resumenumber: resumenumber
+        };
+        resolve(webData);
+      } else {
+        reject(null);
+      }
+    });
   }
 }
