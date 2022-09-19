@@ -3,7 +3,7 @@ import { ComponentDto } from "./component.dto";
 import { GlobalStyleDto } from "./globalStyle.dto";
 
 export class ResumeDto {
-  USER: string; // 模板创建人
+  USER: string; // 模板创建人或者使用人
   EMAIL: string; // 创建人邮箱
   readonly previewUrl: string; // 模板预览图链接
   readonly ID: string;

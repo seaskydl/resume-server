@@ -6,13 +6,16 @@ import { QueryDto } from "../resume/dto/query.dto";
 import pageQuery from "common/utils/pageQuery";
 import { Sponsor } from "./interfaces/sponsor.interface";
 import { Category } from "category/interface/category.interface";
+import { Resumeactive } from "resumeactive/interfaces/resumeactive.interface";
 
 @Injectable()
 export class UnauthService {
   constructor(
     @InjectModel("Resume") private readonly resumeModel: Model<Resume>,
     @InjectModel("Sponsor") private readonly sponsorModel: Model<Sponsor>,
-    @InjectModel("Category") private readonly CategoryModel: Model<Category>
+    @InjectModel("Category") private readonly CategoryModel: Model<Category>,
+    @InjectModel("Resumeactive")
+    private readonly resumeactiveModel: Model<Resumeactive>
   ) {}
 
   // 查询模板列表
@@ -29,32 +32,54 @@ export class UnauthService {
         queryParams = {};
       }
       console.log("查询参数", page, limit);
-      pageQuery(page, limit, this.resumeModel, "", queryParams, {}, function(
-        error,
-        $page
-      ) {
-        if (error) {
-          reject(error);
-        } else {
-          let list = $page.results.map((item) => {
-            return {
-              ID: item.ID,
-              previewUrl: item.previewUrl,
-              NAME: item.NAME,
+      pageQuery(
+        page,
+        limit,
+        this.resumeModel,
+        "",
+        queryParams,
+        {},
+        async (error, $page) => {
+          if (error) {
+            reject(error);
+          } else {
+            let list = $page.results.map((item) => {
+              return {
+                ID: item.ID,
+                previewUrl: item.previewUrl,
+                NAME: item.NAME,
+              };
+            });
+            // 在查询模板的相关浏览记录
+            for (let i = 0; i < list.length; i++) {
+              let actives = await this.resumeactiveModel
+                .findOne({ ID: list[i].ID })
+                .exec();
+              if (actives) {
+                list[i].resumeActive = {
+                  views: actives.view_users_email.length,
+                  likes: actives.like_users_email.length,
+                };
+              } else {
+                list[i].resumeActive = {
+                  views: 0,
+                  likes: 0,
+                };
+              }
+            }
+            let responseData = {
+              page: {
+                currentPage: $page.pageNumber,
+                pageCount: $page.pageCount,
+                count: $page.count,
+                isEnd: $page.isEnd,
+              },
+              list: list,
             };
-          });
-          let responseData = {
-            page: {
-              currentPage: $page.pageNumber,
-              pageCount: $page.pageCount,
-              count: $page.count,
-              isEnd: $page.isEnd,
-            },
-            list: list,
-          };
-          resolve(responseData);
+            resolve(responseData);
+          }
         }
-      });
+      );
     });
   }
 

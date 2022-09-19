@@ -19,6 +19,7 @@ import { RolesGuard } from "common/guards/roles.guard";
 import { LoggingInterceptor } from "common/interceptors/logging.interceptor";
 import { TransformInterceptor } from "common/interceptors/transform.interceptor";
 import { IResponse } from "common/interfaces/response.interface";
+import { ResumeactiveService } from "resumeactive/resumeactive.servive";
 import { ResumeDto } from "./dto/resume.dto";
 import { ResumeService } from "./resume.service";
 
@@ -27,7 +28,10 @@ import { ResumeService } from "./resume.service";
 @UseGuards(AuthGuard("jwt"))
 @UseInterceptors(LoggingInterceptor, TransformInterceptor)
 export class ResumeController {
-  constructor(private readonly resumeService: ResumeService) {}
+  constructor(
+    private readonly resumeService: ResumeService,
+    private readonly resumeactiveService: ResumeactiveService
+  ) {}
 
   @ApiOperation({ summary: "查询简历模板数据" })
   @Get("template/:id")
@@ -40,6 +44,9 @@ export class ResumeController {
         EMAIL: req.user.email,
         ID: params.id,
       };
+      // 添加模板浏览量
+      this.resumeactiveService.addResumeViewers(query.ID, query.EMAIL);
+
       const resumeDraft = await this.resumeService.getResumeByEmailAndId(query);
       if (resumeDraft) {
         return new ResponseSuccess("请求成功", new ResumeDto(resumeDraft));

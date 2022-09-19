@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
-import { CategoryService } from "category/category.service";
 import { ResponseError, ResponseSuccess } from "common/dto/response.dto";
 import { IResponse } from "common/interfaces/response.interface";
 import { UnauthService } from "./unauth.service";
@@ -14,7 +13,7 @@ export class UnauthController {
   @Get("getTemplateList")
   async getTemplateList(@Query() query): Promise<IResponse> {
     try {
-      let templateList = await this.unauthService.getTemplateList(query);
+      let templateList: any = await this.unauthService.getTemplateList(query);
       if (templateList) {
         return new ResponseSuccess("查询成功", templateList);
       } else {

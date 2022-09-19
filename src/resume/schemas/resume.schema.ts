@@ -1,5 +1,4 @@
 import * as mongoose from "mongoose";
-const moment = require("moment");
 
 export const ResumeSchema = new mongoose.Schema(
   {
