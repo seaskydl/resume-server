@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Module } from '@nestjs/common'
-import { PuppeteerService } from './puppeteer.service'
-import { PuppeteerController } from './puppeteer.controller'
-import { Cluster } from 'puppeteer-cluster'
+import { Module } from "@nestjs/common";
+import { PuppeteerService } from "./puppeteer.service";
+import { PuppeteerController } from "./puppeteer.controller";
+import { Cluster } from "puppeteer-cluster";
 
 @Module({
   controllers: [PuppeteerController],
@@ -29,7 +29,7 @@ import { Cluster } from 'puppeteer-cluster'
           maxConcurrency: 10,
           puppeteerOptions: {
             headless: true,
-            args: ['--no-sandbox'],
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
           },
         }),
     },

@@ -136,10 +136,12 @@ export class UnauthService {
     return new Promise(async (resolve, reject) => {
       const usernumber = await this.userModel.find().count(); // 用户数
       const resumenumber = await this.userresumeModel.find().count(); // 制作简历数
+      const trafficnumber = await this.requestipModel.find().count(); // 网站累计访问人数
       if (usernumber) {
         let webData = {
           usernumber: usernumber,
           resumenumber: resumenumber,
+          trafficnumber: trafficnumber,
         };
         resolve(webData);
       } else {
