@@ -2,8 +2,8 @@ import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { CategorySchema } from "category/schemas/category.schema";
 import { LoggerMiddleware } from "common/middlewares/logger.middleware";
+import { RequestipSchema } from "requestip/schemas/requestip.schema";
 import { ResumeSchema } from "resume/schemas/resume.schema";
-import { ResumeactiveService } from "resumeactive/resumeactive.servive";
 import { ResumeactiveSchema } from "resumeactive/schemas/resumeactive.schema";
 import { UserresumeSchema } from "userResume/schemas/userresume.schema";
 import { UserSchema } from "users/schemas/user.schema";
@@ -20,6 +20,7 @@ import { UnauthService } from "./unauth.service";
       { name: "Resumeactive", schema: ResumeactiveSchema },
     ]),
     MongooseModule.forFeature([{ name: "User", schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: "Requestip", schema: RequestipSchema }]),
     MongooseModule.forFeature([
       { name: "Userresume", schema: UserresumeSchema },
     ]),

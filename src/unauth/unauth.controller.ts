@@ -75,6 +75,7 @@ export class UnauthController {
   async getWebAnalycData(@IpAddress() clinetIp: string): Promise<IResponse> {
     try {
       console.log('clinetIp',clinetIp)
+      await this.unauthService.saveRequestip(clinetIp);
       let categoryList = await this.unauthService.getWebAnalycData();
       if (categoryList) {
         return new ResponseSuccess("查询成功", categoryList);

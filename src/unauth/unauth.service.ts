@@ -8,6 +8,7 @@ import { Sponsor } from "./interfaces/sponsor.interface";
 import { Category } from "category/interface/category.interface";
 import { Resumeactive } from "resumeactive/interfaces/resumeactive.interface";
 import { User } from "users/interfaces/user.interface";
+import { Requestip } from "requestip/interfaces/requestip.interface";
 
 @Injectable()
 export class UnauthService {
@@ -16,6 +17,7 @@ export class UnauthService {
     @InjectModel("Sponsor") private readonly sponsorModel: Model<Sponsor>,
     @InjectModel("Category") private readonly CategoryModel: Model<Category>,
     @InjectModel("Userresume") private readonly userresumeModel: Model<Resume>,
+    @InjectModel("Requestip") private readonly requestipModel: Model<Requestip>,
     @InjectModel("Resumeactive")
     private readonly resumeactiveModel: Model<Resumeactive>,
     @InjectModel("User") private readonly userModel: Model<User>
@@ -137,9 +139,27 @@ export class UnauthService {
       if (usernumber) {
         let webData = {
           usernumber: usernumber,
-          resumenumber: resumenumber
+          resumenumber: resumenumber,
         };
         resolve(webData);
+      } else {
+        reject(null);
+      }
+    });
+  }
+
+  // 保存用户访问ip
+  async saveRequestip(ip: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      let requestip = await this.requestipModel.findOneAndUpdate(
+        { ip_address: ip },
+        {
+          ip_address: ip,
+        },
+        { upsert: true, new: true }
+      );
+      if (requestip) {
+        resolve(requestip);
       } else {
         reject(null);
       }
