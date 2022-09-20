@@ -28,6 +28,20 @@ export class UnauthService {
     return new Promise(async (resolve, reject) => {
       let page = Number(queryDto.page) || 1; // 查询页码
       let limit = Number(queryDto.limit) || 10; // 查询条数
+      let sort;
+      // 排序规则
+      if (queryDto.sort) {
+        if (queryDto.sort === "time") {
+          sort = {
+            createDate: -1,
+          };
+        } else {
+          sort = {};
+        }
+      } else {
+        sort = {};
+      }
+      // 查询条件
       let queryParams;
       if (queryDto.category) {
         queryParams = {
@@ -43,7 +57,7 @@ export class UnauthService {
         this.resumeModel,
         "",
         queryParams,
-        {},
+        sort,
         async (error, $page) => {
           if (error) {
             reject(error);

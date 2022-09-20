@@ -74,7 +74,7 @@ export class UnauthController {
   @Get("getWebAnalycData")
   async getWebAnalycData(@IpAddress() clinetIp: string): Promise<IResponse> {
     try {
-      console.log('clinetIp',clinetIp)
+      console.log("clinetIp", clinetIp);
       await this.unauthService.saveRequestip(clinetIp);
       let categoryList = await this.unauthService.getWebAnalycData();
       if (categoryList) {
