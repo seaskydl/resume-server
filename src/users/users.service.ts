@@ -301,4 +301,43 @@ export class UsersService {
     }
     return await this.userModel.deleteOne({ email: email });
   }
+
+  // 更新用户头像
+  async updateAvatar(avatar: string, email: string) {
+    let userFromDb = await this.userModel.findOne({
+      email: email,
+    });
+    if (!userFromDb) {
+      throw new HttpException("该用户不存在", HttpStatus.NOT_FOUND);
+    }
+    let updateUser = await this.userModel.updateOne(
+      { email: email },
+      {
+        $set: {
+          "photos.profilePic.url": avatar,
+        },
+      }
+    );
+    return updateUser;
+  }
+
+  // 更新用户个人信息
+  async updatePersonInfo(email: string, userInfo: any) {
+    let userFromDb = await this.userModel.findOne({
+      email: email,
+    });
+    if (!userFromDb) {
+      throw new HttpException("该用户不存在", HttpStatus.NOT_FOUND);
+    }
+    let updateUser = await this.userModel.updateOne(
+      { email: email },
+      {
+        $set: {
+          name: userInfo.name,
+          surname: userInfo.surname,
+        },
+      }
+    );
+    return updateUser;
+  }
 }

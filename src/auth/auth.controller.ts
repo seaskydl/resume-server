@@ -10,7 +10,6 @@ import { UsersService } from '../users/users.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {default as config} from '../config';
-import { getNowDate } from 'common/utils/date';
 
 @ApiTags('用户相关接口')
 @Controller('auth')
@@ -105,7 +104,7 @@ export class AuthController {
         if(isValidPassword) {
           isNewPasswordChanged = await this.userService.setPassword(resetPassword.email, resetPassword.newPassword);
         } else {
-          return new ResponseError("RESET_PASSWORD.WRONG_CURRENT_PASSWORD");
+          return new ResponseError("旧密码错误");
         }
       } else if (resetPassword.newPasswordToken) {
         var forgottenPasswordModel = await this.authService.getForgottenPasswordModel(resetPassword.newPasswordToken);
@@ -114,7 +113,7 @@ export class AuthController {
       } else {
         return new ResponseError('设置密码失败', null, 500);
       }
-      return new ResponseSuccess("RESET_PASSWORD.PASSWORD_CHANGED", isNewPasswordChanged);
+      return new ResponseSuccess("密码修改成功", isNewPasswordChanged);
     } catch(error) {
       return new ResponseError('重置密码失败', error, 500);
     }

@@ -41,7 +41,15 @@ export class UploadController {
         //设置文件存储名称
         filename: (req, file, cb) => {
           let extname = path.extname(file.originalname);
-          let filename = file.fieldname + "-" + Date.now() + extname;
+          // 解决中文名乱码的问题
+          file.originalname = Buffer.from(file.originalname, "latin1").toString(
+            "utf8"
+          );
+          let fileName = file.originalname
+            .substring(0, file.originalname.lastIndexOf("."))
+            .toString("utf8");
+
+          let filename = fileName + "-" + Date.now() + extname;
           cb(null, filename);
         },
       }),

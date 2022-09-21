@@ -6,7 +6,10 @@ export const UserSchema = new mongoose.Schema(
   {
     id: String,
     name: String,
-    surname: String,
+    surname: {
+      type: String,
+      default: "一句话介绍自己",
+    },
     email: String,
     phone: String,
     password: String,
