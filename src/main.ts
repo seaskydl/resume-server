@@ -30,9 +30,10 @@ async function bootstrap() {
       message: "Too many requests from this IP, please try again later",
     })
   );
+  // 每个ip1小时内允许注册次数
   const createAccountLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour window
-    max: 3, // start blocking after 3 requests
+    max: 5, // start blocking after 3 requests
     message:
       "Too many accounts created from this IP, please try again after an hour",
   });
