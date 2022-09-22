@@ -1,3 +1,4 @@
+import { HttpModule } from "@nestjs/axios";
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { CategorySchema } from "category/schemas/category.schema";
@@ -24,6 +25,7 @@ import { UnauthService } from "./unauth.service";
     MongooseModule.forFeature([
       { name: "Userresume", schema: UserresumeSchema },
     ]),
+    HttpModule,
   ],
   controllers: [UnauthController],
   providers: [UnauthService],

@@ -9,6 +9,9 @@ import { Category } from "category/interface/category.interface";
 import { Resumeactive } from "resumeactive/interfaces/resumeactive.interface";
 import { User } from "users/interfaces/user.interface";
 import { Requestip } from "requestip/interfaces/requestip.interface";
+import { HttpService } from "@nestjs/axios";
+import { lastValueFrom } from "rxjs";
+import { default as config } from "../config";
 
 @Injectable()
 export class UnauthService {
@@ -20,7 +23,8 @@ export class UnauthService {
     @InjectModel("Requestip") private readonly requestipModel: Model<Requestip>,
     @InjectModel("Resumeactive")
     private readonly resumeactiveModel: Model<Resumeactive>,
-    @InjectModel("User") private readonly userModel: Model<User>
+    @InjectModel("User") private readonly userModel: Model<User>,
+    private httpService: HttpService
   ) {}
 
   // 查询模板列表
@@ -167,10 +171,22 @@ export class UnauthService {
   // 保存用户访问ip
   async saveRequestip(ip: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
+      // 查询IP详细地址
+      const data = await lastValueFrom(
+        this.httpService.get(
+          `https://restapi.amap.com/v3/ip?key=${config.gaod.key}&ip=${ip}`
+        )
+      );
+      console.log("data", data.data);
       let requestip = await this.requestipModel.findOneAndUpdate(
         { ip_address: ip },
         {
           ip_address: ip,
+          infocode: data.data.infocode.toString(),
+          province: data.data.province.toString(),
+          city: data.data.city.toString(),
+          adcode: data.data.adcode.toString(),
+          rectangle: data.data.rectangle.toString(),
         },
         { upsert: true, new: true }
       );
