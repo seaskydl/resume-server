@@ -335,6 +335,7 @@ export class UsersService {
         $set: {
           name: userInfo.name,
           surname: userInfo.surname,
+          birthdaydate: new Date(userInfo.birthdaydate),
         },
       }
     );
