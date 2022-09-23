@@ -13,6 +13,7 @@ export class ResumeDto {
   COMPONENTS: ComponentDto[];
   GLOBAL_STYLE: GlobalStyleDto;
   CATEGORY: Array<string>; // 简历分类
+  PASS_AUDIT: Number;
   constructor(object: any) {
     this.ID = object.ID;
     this.NAME = object.NAME;
@@ -29,7 +30,7 @@ export class ResumeDto {
     this.EMAIL = object.EMAIL;
     this.previewUrl = object.previewUrl;
     this.CATEGORY = [];
-    if(object.CATEGORY) {
+    if (object.CATEGORY) {
       object.CATEGORY.forEach((item) => {
         this.CATEGORY.push(item);
       });

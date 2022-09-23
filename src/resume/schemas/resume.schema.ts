@@ -11,6 +11,10 @@ export const ResumeSchema = new mongoose.Schema(
     LAYOUT: String,
     COMPONENTS: Array,
     CATEGORY: Array, // 简历风格
+    PASS_AUDIT: {
+      type: Number,
+      default: 3,
+    }, // 是否通过审核 1-同意  2-拒绝  3-待审核
     GLOBAL_STYLE: {
       themeColor: String, // 主题色
       firstTitleFontSize: String, // 一级标题

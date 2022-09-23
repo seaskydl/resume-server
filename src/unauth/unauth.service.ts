@@ -54,6 +54,7 @@ export class UnauthService {
       } else {
         queryParams = {};
       }
+      queryParams.PASS_AUDIT = 1;
       console.log("查询参数", page, limit);
       pageQuery(
         page,

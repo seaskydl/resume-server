@@ -5,7 +5,6 @@ import { Model } from "mongoose";
 import { ResumeDto } from "./dto/resume.dto";
 import { QueryDto } from "./dto/query.dto";
 import pageQuery from "common/utils/pageQuery";
-import { getNowDate } from "common/utils/date";
 
 @Injectable()
 export class ResumeService {
@@ -33,14 +32,24 @@ export class ResumeService {
     });
   }
 
-  // 新增模板
+  // 新增模板,没有则新增，有则判断创建人是否是同一个人，然后更新
   async addTemplate(newTemplate: ResumeDto) {
-    let isHave = await this.findResumeById(newTemplate.ID);
-    if (!isHave) {
+    let template: any = await this.findResumeById(newTemplate.ID);
+    if (template) {
+      // 判断创建用户和提交更改用户是否为同一人
+      if (newTemplate.EMAIL !== template.EMAIL) {
+        throw new HttpException("不能修改别人的模板", HttpStatus.FORBIDDEN);
+      } else {
+        return await this.resumeModel.findOneAndUpdate(
+          { EMAIL: newTemplate.EMAIL, ID: newTemplate.ID },
+          newTemplate,
+          { upsert: true, new: true }
+        );
+      }
+    } else {
+      // 未找到该模板，直接新增
       let newTem = new this.resumeModel(newTemplate);
       return await newTem.save();
-    } else {
-      throw new HttpException("模板ID重复", HttpStatus.FORBIDDEN);
     }
   }
 
@@ -91,7 +100,7 @@ export class ResumeService {
         } else {
           let list = $page.results.map((item) => {
             return {
-              ID: item.id,
+              ID: item.ID,
               previewUrl: item.previewUrl,
               NAME: item.NAME,
             };
@@ -112,11 +121,19 @@ export class ResumeService {
   }
 
   // 查询模板列表所有数据
-  async getTemplateListAll(queryDto: QueryDto) {
+  async getTemplateListAll(queryDto) {
     return new Promise(async (resolve, reject) => {
       let page = Number(queryDto.page) || 1; // 查询页码
       let limit = Number(queryDto.limit) || 10; // 查询条数
-      pageQuery(page, limit, this.resumeModel, "", {}, {}, function(
+      let queryParams;
+      if (queryDto.audit) {
+        queryParams = {
+          PASS_AUDIT: queryDto.audit,
+        };
+      } else {
+        queryParams = {};
+      }
+      pageQuery(page, limit, this.resumeModel, "", queryParams, {}, function(
         error,
         $page
       ) {
@@ -135,6 +152,71 @@ export class ResumeService {
           resolve(responseData);
         }
       });
+    });
+  }
+
+  // 审核模板
+  async auditTemplate(params) {
+    let resumeData = await this.resumeModel.findOne({ ID: params.ID });
+    if (!resumeData) {
+      throw new HttpException("模板ID不存在", HttpStatus.NOT_FOUND);
+    }
+    return await this.resumeModel
+      .updateOne(
+        { ID: params.ID },
+        {
+          $set: {
+            PASS_AUDIT: params.pass_audit,
+          },
+        }
+      )
+      .exec();
+  }
+
+  // 用户查询自己贡献的模板列表
+  async getMyContributeTemplateList(queryDto) {
+    return new Promise(async (resolve, reject) => {
+      let page = Number(queryDto.page) || 1; // 查询页码
+      let limit = Number(queryDto.limit) || 10; // 查询条数
+      pageQuery(
+        page,
+        limit,
+        this.resumeModel,
+        "",
+        {
+          EMAIL: queryDto.email,
+          PASS_AUDIT: queryDto.audit,
+        },
+        {},
+        function(error, $page) {
+          if (error) {
+            reject(error);
+          } else {
+            let list = $page.results.map((item) => {
+              return {
+                ID: item.ID,
+                TITLE: item.TITLE,
+                previewUrl: item.previewUrl,
+                NAME: item.NAME,
+                PASS_AUDIT: item.PASS_AUDIT,
+                CATEGORY: item.CATEGORY,
+                createDate: item.createDate,
+                updateDate: item.updateDate,
+              };
+            });
+            let responseData = {
+              page: {
+                currentPage: $page.pageNumber,
+                pageCount: $page.pageCount,
+                count: $page.count,
+                isEnd: $page.isEnd,
+              },
+              list: list,
+            };
+            resolve(responseData);
+          }
+        }
+      );
     });
   }
 }

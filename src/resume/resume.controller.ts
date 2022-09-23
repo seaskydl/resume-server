@@ -33,7 +33,7 @@ export class ResumeController {
     private readonly resumeactiveService: ResumeactiveService
   ) {}
 
-  @ApiOperation({ summary: "查询简历模板数据" })
+  @ApiOperation({ summary: "查询简历模板数据，有草稿则返回草稿" })
   @Get("template/:id")
   @UseGuards(RolesGuard)
   @Roles("User")
@@ -62,10 +62,10 @@ export class ResumeController {
     }
   }
 
-  @ApiOperation({ summary: "增加模板" })
+  @ApiOperation({ summary: "贡献模板或者更新自己的已经贡献过的模板" })
   @Post("addTemplate")
   @UseGuards(RolesGuard)
-  @Roles("Admin")
+  @Roles("User")
   async addTemplateJson(
     @Body() ResumeDto: ResumeDto,
     @Req() req
@@ -73,6 +73,7 @@ export class ResumeController {
     try {
       ResumeDto.USER = req.user.name;
       ResumeDto.EMAIL = req.user.email;
+      ResumeDto.PASS_AUDIT = 3;
       let newTemplate = await this.resumeService.addTemplate(ResumeDto);
       if (newTemplate) {
         return new ResponseSuccess("模板添加成功", null);
@@ -138,7 +139,7 @@ export class ResumeController {
     }
   }
 
-  @ApiOperation({ summary: "查询模板列表全部数据" })
+  @ApiOperation({ summary: "查询模板列表-每条都有全部数据" })
   @Get("templateListAll")
   @UseGuards(RolesGuard)
   @Roles("User")
@@ -147,6 +148,7 @@ export class ResumeController {
       let query = {
         page: Number(params.page) || 1,
         limit: Number(params.limit) || 10,
+        audit: params.audit || null,
       };
       let resume = await this.resumeService.getTemplateListAll(query);
       if (resume) {
@@ -154,6 +156,45 @@ export class ResumeController {
       }
     } catch (error) {
       return new ResponseError(error, "查询模板数据失败");
+    }
+  }
+
+  @ApiOperation({ summary: "审核模板" })
+  @Post("auditTemplate")
+  @UseGuards(RolesGuard)
+  @Roles("Admin")
+  async auditTemplate(@Body() params): Promise<IResponse> {
+    try {
+      console.log("params", params.ID);
+      let resume = await this.resumeService.auditTemplate(params);
+      if (resume) {
+        return new ResponseSuccess("审核成功", null);
+      }
+    } catch (error) {
+      return new ResponseError(error, "审核失败");
+    }
+  }
+
+  @ApiOperation({ summary: "用户查询自己贡献的模板列表" })
+  @Get("getMyContributeTemplateList")
+  @UseGuards(RolesGuard)
+  @Roles("User")
+  async getMyContributeTemplateList(@Query() params): Promise<IResponse> {
+    try {
+      let query = {
+        page: Number(params.page) || 1,
+        limit: Number(params.limit) || 10,
+        email: params.email,
+        audit: params.audit,
+      };
+      let resumeList = await this.resumeService.getMyContributeTemplateList(
+        query
+      );
+      if (resumeList) {
+        return new ResponseSuccess("查询成功", resumeList);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
     }
   }
 }
