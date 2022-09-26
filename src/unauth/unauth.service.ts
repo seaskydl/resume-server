@@ -72,10 +72,12 @@ export class UnauthService {
                 ID: item.ID,
                 previewUrl: item.previewUrl,
                 NAME: item.NAME,
+                EMAIL: item.EMAIL,
               };
             });
-            // 在查询模板的相关浏览记录
+            // 在查询模板的相关浏览记录、用户基本信息
             for (let i = 0; i < list.length; i++) {
+              // 浏览记录等
               let actives = await this.resumeactiveModel
                 .findOne({ ID: list[i].ID })
                 .exec();
@@ -89,6 +91,22 @@ export class UnauthService {
                   views: 0,
                   likes: 0,
                 };
+              }
+
+              // 用户信息等
+              let user = await this.userModel
+                .findOne({
+                  email: list[i].EMAIL,
+                })
+                .exec();
+              if (user) {
+                list[i].userInfo = {
+                  name: user.name,
+                  userId: user._id,
+                  avatar: user.photos.profilePic.url,
+                };
+              } else {
+                list[i].userInfo = null;
               }
             }
             let responseData = {
