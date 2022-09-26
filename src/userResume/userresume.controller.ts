@@ -72,7 +72,7 @@ export class UserresumeController {
     }
   }
 
-  @ApiOperation({ summary: "查询简历列表" })
+  @ApiOperation({ summary: "查询个人简历列表" })
   @Get("templateList")
   @UseGuards(RolesGuard)
   @Roles("User")

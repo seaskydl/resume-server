@@ -11,6 +11,14 @@ export const UserresumeSchema = new mongoose.Schema(
     LAYOUT: String,
     COMPONENTS: Array,
     CATEGORY: Array, // 简历风格
+    LIKES: {
+      type: Number,
+      default: 0,
+    },
+    VIEWS: {
+      type: Number,
+      default: 0,
+    },
     GLOBAL_STYLE: {
       themeColor: String, // 主题色
       firstTitleFontSize: String, // 一级标题

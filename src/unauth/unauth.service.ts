@@ -40,10 +40,14 @@ export class UnauthService {
             createDate: -1,
           };
         } else {
-          sort = {};
+          sort = {
+            VIEWS: -1,
+          };
         }
       } else {
-        sort = {};
+        sort = {
+          VIEWS: -1,
+        };
       }
       // 查询条件
       let queryParams;
@@ -73,26 +77,12 @@ export class UnauthService {
                 previewUrl: item.previewUrl,
                 NAME: item.NAME,
                 EMAIL: item.EMAIL,
+                LIKES: item.LIKES,
+                VIEWS: item.VIEWS,
               };
             });
             // 在查询模板的相关浏览记录、用户基本信息
             for (let i = 0; i < list.length; i++) {
-              // 浏览记录等
-              let actives = await this.resumeactiveModel
-                .findOne({ ID: list[i].ID })
-                .exec();
-              if (actives) {
-                list[i].resumeActive = {
-                  views: actives.view_users_email.length,
-                  likes: actives.like_users_email.length,
-                };
-              } else {
-                list[i].resumeActive = {
-                  views: 0,
-                  likes: 0,
-                };
-              }
-
               // 用户信息等
               let user = await this.userModel
                 .findOne({

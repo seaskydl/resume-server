@@ -11,6 +11,16 @@ export const ResumeSchema = new mongoose.Schema(
     LAYOUT: String,
     COMPONENTS: Array,
     CATEGORY: Array, // 简历风格
+    view_users_email: Array, //  简历浏览用户list
+    like_users_email: Array, // 简历点赞用户list
+    LIKES: {
+      type: Number,
+      default: 0,
+    },
+    VIEWS: {
+      type: Number,
+      default: 0,
+    },
     PASS_AUDIT: {
       type: Number,
       default: 3,

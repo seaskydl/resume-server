@@ -19,7 +19,6 @@ import { RolesGuard } from "common/guards/roles.guard";
 import { LoggingInterceptor } from "common/interceptors/logging.interceptor";
 import { TransformInterceptor } from "common/interceptors/transform.interceptor";
 import { IResponse } from "common/interfaces/response.interface";
-import { ResumeactiveService } from "resumeactive/resumeactive.servive";
 import { ResumeDto } from "./dto/resume.dto";
 import { ResumeService } from "./resume.service";
 
@@ -28,10 +27,7 @@ import { ResumeService } from "./resume.service";
 @UseGuards(AuthGuard("jwt"))
 @UseInterceptors(LoggingInterceptor, TransformInterceptor)
 export class ResumeController {
-  constructor(
-    private readonly resumeService: ResumeService,
-    private readonly resumeactiveService: ResumeactiveService
-  ) {}
+  constructor(private readonly resumeService: ResumeService) {}
 
   @ApiOperation({ summary: "查询简历模板数据，有草稿则返回草稿" })
   @Get("template/:id")
@@ -44,15 +40,18 @@ export class ResumeController {
         EMAIL: req.user.email,
         ID: params.id,
       };
-      // 添加模板浏览量
-      this.resumeactiveService.addResumeViewers(query.ID, query.EMAIL);
+      // 新增浏览量
+      await this.resumeService.addResumeViewers(query.ID, query.EMAIL);
 
       const resumeDraft = await this.resumeService.getResumeByEmailAndId(query);
       if (resumeDraft) {
         return new ResponseSuccess("请求成功", new ResumeDto(resumeDraft));
       } else {
         // 没有保存草稿则查询原始模板数据
-        let resume = await this.resumeService.findResumeById(params.id);
+        let resume = await this.resumeService.findResumeById(
+          params.id,
+          query.EMAIL
+        );
         if (resume) {
           return new ResponseSuccess("请求成功", new ResumeDto(resume));
         }
@@ -123,16 +122,15 @@ export class ResumeController {
     }
   }
 
-  @ApiOperation({ summary: "查询模板数据" })
+  @ApiOperation({ summary: "查询原始模板数据" })
   @Get("templateReset/:id")
   @UseGuards(RolesGuard)
   @Roles("User")
   async getResetTemplateJsonById(@Param() params): Promise<IResponse> {
     try {
-      // 没有保存草稿则查询原始模板数据
       let resume = await this.resumeService.findResumeById(params.id);
       if (resume) {
-        return new ResponseSuccess("请求成功", new ResumeDto(resume));
+        return new ResponseSuccess("请求成功", resume);
       }
     } catch (error) {
       return new ResponseError(error, "查询模板数据失败");

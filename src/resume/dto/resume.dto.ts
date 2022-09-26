@@ -14,6 +14,8 @@ export class ResumeDto {
   GLOBAL_STYLE: GlobalStyleDto;
   CATEGORY: Array<string>; // 简历分类
   PASS_AUDIT: Number;
+  LIKES: Number;
+  VIEWS: Number;
   constructor(object: any) {
     this.ID = object.ID;
     this.NAME = object.NAME;
@@ -35,5 +37,7 @@ export class ResumeDto {
         this.CATEGORY.push(item);
       });
     }
+    this.LIKES = object.LIKES || 0;
+    this.VIEWS = object.VIEWS || 0;
   }
 }

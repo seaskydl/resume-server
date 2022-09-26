@@ -14,14 +14,14 @@ export class ResumeService {
   ) {}
 
   // 查询模板数据
-  async findResumeById(id: string): Promise<Resume> {
+  async findResumeById(id: string, email?: string): Promise<Resume> {
     return await this.resumeModel.findOne({ ID: id }).exec();
   }
 
   // 根据邮箱和id查询单个简历
   async getResumeByEmailAndId(query: { EMAIL: string; ID: string }) {
     return new Promise(async (resolve, reject) => {
-      let resume = await this.userresumeModel
+      let resume: any = await this.userresumeModel
         .findOne({ ID: query.ID, EMAIL: query.EMAIL })
         .exec();
       if (resume) {
@@ -171,6 +171,27 @@ export class ResumeService {
         }
       )
       .exec();
+  }
+
+  // 给简历模板添加浏览用户
+  async addResumeViewers(ID: string, EMAIL: string) {
+    // 查找简历模板
+    const resume: any = await this.resumeModel.findOne({ ID: ID });
+    // 添加浏览用户邮箱
+    if (resume) {
+      await this.resumeModel.findOneAndUpdate(
+        { ID: ID },
+        {
+          $addToSet: { view_users_email: EMAIL },
+          LIKES: resume.like_users_email.length + 1,
+          VIEWS: resume.view_users_email.length + 1,
+        },
+        { upsert: true, new: true }
+      );
+      console.log("浏览量添加成功");
+    } else {
+      throw new HttpException("查询失败", HttpStatus.BAD_REQUEST);
+    }
   }
 
   // 用户查询自己贡献的模板列表

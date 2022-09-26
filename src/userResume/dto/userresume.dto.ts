@@ -13,6 +13,8 @@ export class UserResumeDto {
   COMPONENTS: ComponentDto[];
   GLOBAL_STYLE: GlobalStyleDto;
   CATEGORY: Array<any>; // 简历风格
+  LIKES: Number;
+  VIEWS: Number;
   constructor(object: any) {
     this.ID = object.ID;
     this.NAME = object.NAME;
@@ -34,5 +36,7 @@ export class UserResumeDto {
     this.EMAIL = object.EMAIL;
     this.USER = object.USER;
     this.previewUrl = object.previewUrl;
+    this.LIKES = object.LIKES || 0;
+    this.VIEWS = object.VIEWS || 0;
   }
 }
