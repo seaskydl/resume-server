@@ -77,8 +77,8 @@ export class UnauthService {
                 previewUrl: item.previewUrl,
                 NAME: item.NAME,
                 EMAIL: item.EMAIL,
-                LIKES: item.LIKES,
-                VIEWS: item.VIEWS,
+                LIKES: item.like_users_email.length,
+                VIEWS: item.view_users_email.length,
               };
             });
             // 在查询模板的相关浏览记录、用户基本信息

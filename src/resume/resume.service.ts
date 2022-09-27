@@ -183,8 +183,8 @@ export class ResumeService {
         { ID: ID },
         {
           $addToSet: { view_users_email: EMAIL },
-          LIKES: resume.like_users_email.length + 1,
-          VIEWS: resume.view_users_email.length + 1,
+          LIKES: resume.like_users_email.length,
+          VIEWS: resume.view_users_email.length,
         },
         { upsert: true, new: true }
       );
