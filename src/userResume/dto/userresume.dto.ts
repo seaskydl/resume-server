@@ -15,6 +15,7 @@ export class UserResumeDto {
   CATEGORY: Array<any>; // 简历风格
   LIKES: Number;
   VIEWS: Number;
+  IS_ONLINE: Boolean;
   constructor(object: any) {
     this.ID = object.ID;
     this.NAME = object.NAME;
@@ -38,5 +39,6 @@ export class UserResumeDto {
     this.previewUrl = object.previewUrl;
     this.LIKES = object.LIKES || 0;
     this.VIEWS = object.VIEWS || 0;
+    this.IS_ONLINE = object.IS_ONLINE || false;
   }
 }

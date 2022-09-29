@@ -1,10 +1,9 @@
-import { ComponentDto } from "./component.dto";
-import { GlobalStyleDto } from "./globalStyle.dto";
+import { ComponentDto } from "resume/dto/component.dto";
+import { GlobalStyleDto } from "resume/dto/globalStyle.dto";
 
-export class ResumeDto {
-  USER: string; // 模板创建人或者使用人
-  EMAIL: string; // 创建人邮箱
+export class OnlineResumeDto {
   readonly previewUrl: string; // 模板预览图链接
+  readonly _id: string;
   readonly ID: string;
   readonly NAME: string;
   readonly TITLE: string;
@@ -13,9 +12,8 @@ export class ResumeDto {
   GLOBAL_STYLE: GlobalStyleDto;
   CATEGORY: Array<string>; // 简历分类
   PASS_AUDIT: Number;
-  LIKES: Number;
-  VIEWS: Number;
   constructor(object: any) {
+    this._id = object._id;
     this.ID = object.ID;
     this.NAME = object.NAME;
     this.TITLE = object.TITLE;
@@ -27,16 +25,11 @@ export class ResumeDto {
         this.COMPONENTS.push(new ComponentDto(item));
       });
     }
-    this.USER = object.USER;
-    this.EMAIL = object.EMAIL;
-    this.previewUrl = object.previewUrl;
     this.CATEGORY = [];
     if (object.CATEGORY) {
       object.CATEGORY.forEach((item) => {
         this.CATEGORY.push(item);
       });
     }
-    this.LIKES = object.LIKES || 0;
-    this.VIEWS = object.VIEWS || 0;
   }
 }

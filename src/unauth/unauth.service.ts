@@ -21,9 +21,8 @@ export class UnauthService {
     @InjectModel("Category") private readonly CategoryModel: Model<Category>,
     @InjectModel("Userresume") private readonly userresumeModel: Model<Resume>,
     @InjectModel("Requestip") private readonly requestipModel: Model<Requestip>,
-    @InjectModel("Resumeactive")
-    private readonly resumeactiveModel: Model<Resumeactive>,
-    @InjectModel("User") private readonly userModel: Model<User>,
+    @InjectModel("User")
+    private readonly userModel: Model<User>,
     private httpService: HttpService
   ) {}
 
@@ -93,7 +92,9 @@ export class UnauthService {
                 list[i].userInfo = {
                   name: user.name,
                   userId: user._id,
-                  avatar: user.photos.profilePic.url,
+                  avatar: user.photos.profilePic
+                    ? user.photos.profilePic.url
+                    : "",
                 };
               } else {
                 list[i].userInfo = null;
@@ -205,5 +206,18 @@ export class UnauthService {
         reject(null);
       }
     });
+  }
+
+  // 根据id查询在线简历数据
+  getOnlineResume(id: string) {
+    const resume = this.userresumeModel.findOne({
+      _id: id,
+      IS_ONLINE: true,
+    });
+    if (resume) {
+      return resume;
+    } else {
+      throw new HttpException("简历不存在", HttpStatus.FOUND);
+    }
   }
 }

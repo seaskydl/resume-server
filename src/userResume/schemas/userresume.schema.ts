@@ -11,6 +11,7 @@ export const UserresumeSchema = new mongoose.Schema(
     LAYOUT: String,
     COMPONENTS: Array,
     CATEGORY: Array, // 简历风格
+    IS_ONLINE: Boolean, // 是否是在线简历
     LIKES: {
       type: Number,
       default: 0,

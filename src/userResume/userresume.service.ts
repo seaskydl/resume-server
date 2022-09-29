@@ -55,7 +55,19 @@ export class UserresumeService {
     EMAIL: string;
     page: number;
     limit: number;
+    IS_ONLINE: boolean;
   }) {
+    let queryParams;
+    if (query.IS_ONLINE) {
+      queryParams = {
+        IS_ONLINE: query.IS_ONLINE,
+        EMAIL: query.EMAIL,
+      };
+    } else {
+      queryParams = {
+        EMAIL: query.EMAIL,
+      };
+    }
     return new Promise(async (resolve, reject) => {
       let page = Number(query.page); // 查询页码
       let limit = Number(query.limit); // 查询条数
@@ -64,9 +76,7 @@ export class UserresumeService {
         limit,
         this.userresumeModel,
         "",
-        {
-          EMAIL: query.EMAIL,
-        },
+        queryParams,
         {},
         function(error, $page) {
           if (error) {
@@ -74,9 +84,11 @@ export class UserresumeService {
           } else {
             let list = $page.results.map((item) => {
               return {
+                _id: item._id,
                 ID: item.ID,
                 previewUrl: item.previewUrl,
                 NAME: item.NAME,
+                IS_ONLINE: item.IS_ONLINE,
               };
             });
             let responseData = {
@@ -136,10 +148,45 @@ export class UserresumeService {
 
   // 管理员删除简历
   async deleteUserResumeByAdmin(EMAIL: string, ID: string) {
-    let userResume = await this.userresumeModel.findOne({ EMAIL: EMAIL, ID: ID });
+    let userResume = await this.userresumeModel.findOne({
+      EMAIL: EMAIL,
+      ID: ID,
+    });
     if (!userResume) {
       throw new HttpException("简历不存在", HttpStatus.NOT_FOUND);
     }
     return await this.userresumeModel.deleteOne({ EMAIL: EMAIL, ID: ID });
+  }
+
+  // 发布为线上简历
+  async publishOnline(email: string, ID: string) {
+    let userresume = await this.userresumeModel.findOne({
+      EMAIL: email,
+      ID: ID,
+    });
+    if (userresume) {
+      await this.userresumeModel.updateOne(
+        { EMAIL: email, ID: ID },
+        {
+          $set: {
+            IS_ONLINE: true,
+          },
+        }
+      );
+      return userresume;
+    } else {
+      throw new HttpException("该简历不存在", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  // 更新线上简历设置
+  async updateOnlineResume(params: any) {
+    return await this.userresumeModel.findOneAndUpdate(
+      { EMAIL: params.email, _id: params._id },
+      {
+        IS_ONLINE: params.isOnline,
+      },
+      { upsert: true }
+    );
   }
 }

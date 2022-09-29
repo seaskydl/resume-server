@@ -3,6 +3,7 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { ResponseError, ResponseSuccess } from "common/dto/response.dto";
 import { IResponse } from "common/interfaces/response.interface";
 import { IpAddress } from "common/requestip/getip.request";
+import { OnlineResumeDto } from "./dto/onlineresme.to";
 import { UnauthService } from "./unauth.service";
 
 @ApiTags("无需权限的相关接口")
@@ -79,6 +80,21 @@ export class UnauthController {
       let categoryList = await this.unauthService.getWebAnalycData();
       if (categoryList) {
         return new ResponseSuccess("查询成功", categoryList);
+      } else {
+        return new ResponseError("查询失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "根据id查询用户在线简历" })
+  @Get("getOnlineResume/:id")
+  async getOnlineResume(@Param() params): Promise<IResponse> {
+    try {
+      let resume = await this.unauthService.getOnlineResume(params.id);
+      if (resume) {
+        return new ResponseSuccess("查询成功", new OnlineResumeDto(resume));
       } else {
         return new ResponseError("查询失败", null);
       }

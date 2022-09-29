@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -82,6 +83,7 @@ export class UserresumeController {
         EMAIL: req.user.email,
         page: Number(params.page) || 1,
         limit: Number(params.limit) || 6,
+        IS_ONLINE: params.isOnline || false,
       };
       let resume = await this.userresumeService.getUserResumeByEmail(query);
       if (resume) {
@@ -144,6 +146,51 @@ export class UserresumeController {
       );
       if (userResume) {
         return new ResponseSuccess("删除成功", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "发布为在线简历" })
+  @Post("publishOnline")
+  @UseGuards(RolesGuard)
+  @Roles("User")
+  async publishOnline(@Body() body): Promise<IResponse> {
+    try {
+      let email = body.email;
+      let ID = body.ID;
+      console.log("email", email, ID);
+      let userResume: any = await this.userresumeService.publishOnline(
+        email,
+        ID
+      );
+      if (userResume) {
+        let responseData = {
+          _id: userResume._id,
+          IS_ONLINE: userResume.IS_ONLINE,
+        };
+        return new ResponseSuccess("发布成功", responseData);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "更新在线简历设置" })
+  @Put("updateOnlineResume")
+  @UseGuards(RolesGuard)
+  @Roles("User")
+  async updateOnlineResume(@Body() body, @Req() req): Promise<IResponse> {
+    try {
+      let params = {
+        email: req.user.email,
+        isOnline: body.isOnline,
+        _id: body._id,
+      };
+      let userResume = await this.userresumeService.updateOnlineResume(params);
+      if (userResume) {
+        return new ResponseSuccess("更新成功", userResume);
       }
     } catch (error) {
       return new ResponseError(error.message, null, error.status);
