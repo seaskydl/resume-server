@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { getNowDate } from "common/utils/date";
 import pageQuery from "common/utils/pageQuery";
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import { Resume } from "resume/interfaces/resume.interface";
 import { UserResumeDto } from "./dto/userresume.dto";
 
@@ -89,6 +89,7 @@ export class UserresumeService {
                 previewUrl: item.previewUrl,
                 NAME: item.NAME,
                 IS_ONLINE: item.IS_ONLINE,
+                ONLINE_LINK: item.ONLINE_LINK || "",
               };
             });
             let responseData = {
@@ -159,7 +160,7 @@ export class UserresumeService {
   }
 
   // 发布为线上简历
-  async publishOnline(email: string, ID: string) {
+  async publishOnline(email: string, ID: string, ONLINE_LINK: string) {
     let userresume = await this.userresumeModel.findOne({
       EMAIL: email,
       ID: ID,
@@ -170,6 +171,7 @@ export class UserresumeService {
         {
           $set: {
             IS_ONLINE: true,
+            ONLINE_LINK: ONLINE_LINK,
           },
         }
       );
@@ -181,12 +183,21 @@ export class UserresumeService {
 
   // 更新线上简历设置
   async updateOnlineResume(params: any) {
-    return await this.userresumeModel.findOneAndUpdate(
-      { EMAIL: params.email, _id: params._id },
-      {
-        IS_ONLINE: params.isOnline,
-      },
-      { upsert: true }
-    );
+    let userresume = await this.userresumeModel.findOne({
+      EMAIL: params.email,
+      ID: params.ID,
+    });
+    if (userresume) {
+      return await this.userresumeModel.findOneAndUpdate(
+        { EMAIL: params.email, ID: params.ID },
+        {
+          IS_ONLINE: params.isOnline,
+          ONLINE_LINK: params.onlineLink,
+        },
+        { upsert: true }
+      );
+    } else {
+      throw new HttpException("该简历不存在", HttpStatus.BAD_REQUEST);
+    }
   }
 }

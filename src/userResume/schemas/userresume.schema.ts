@@ -12,6 +12,7 @@ export const UserresumeSchema = new mongoose.Schema(
     COMPONENTS: Array,
     CATEGORY: Array, // 简历风格
     IS_ONLINE: Boolean, // 是否是在线简历
+    ONLINE_LINK: String, // 在线链接路径
     LIKES: {
       type: Number,
       default: 0,

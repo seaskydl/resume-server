@@ -16,6 +16,7 @@ export class UserResumeDto {
   LIKES: Number;
   VIEWS: Number;
   IS_ONLINE: Boolean;
+  ONLINE_LINK: String; // 在线链接路径
   constructor(object: any) {
     this.ID = object.ID;
     this.NAME = object.NAME;
@@ -40,5 +41,6 @@ export class UserResumeDto {
     this.LIKES = object.LIKES || 0;
     this.VIEWS = object.VIEWS || 0;
     this.IS_ONLINE = object.IS_ONLINE || false;
+    this.ONLINE_LINK = object.ONLINE_LINK;
   }
 }

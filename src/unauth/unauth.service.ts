@@ -211,7 +211,7 @@ export class UnauthService {
   // 根据id查询在线简历数据
   getOnlineResume(id: string) {
     const resume = this.userresumeModel.findOne({
-      _id: id,
+      ONLINE_LINK: id,
       IS_ONLINE: true,
     });
     if (resume) {

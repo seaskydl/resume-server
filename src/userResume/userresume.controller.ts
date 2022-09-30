@@ -19,6 +19,7 @@ import { RolesGuard } from "common/guards/roles.guard";
 import { LoggingInterceptor } from "common/interceptors/logging.interceptor";
 import { TransformInterceptor } from "common/interceptors/transform.interceptor";
 import { IResponse } from "common/interfaces/response.interface";
+import { getUuid } from "common/utils/common";
 import { UserResumeDto } from "./dto/userresume.dto";
 import { UserresumeService } from "./userresume.service";
 
@@ -160,14 +161,16 @@ export class UserresumeController {
     try {
       let email = body.email;
       let ID = body.ID;
+      let ONLINE_LINK = getUuid();
       console.log("email", email, ID);
       let userResume: any = await this.userresumeService.publishOnline(
         email,
-        ID
+        ID,
+        ONLINE_LINK
       );
       if (userResume) {
         let responseData = {
-          _id: userResume._id,
+          ONLINE_LINK: userResume.ONLINE_LINK,
           IS_ONLINE: userResume.IS_ONLINE,
         };
         return new ResponseSuccess("发布成功", responseData);
@@ -186,11 +189,12 @@ export class UserresumeController {
       let params = {
         email: req.user.email,
         isOnline: body.isOnline,
-        _id: body._id,
+        onlineLink: body.onlineLink,
+        ID: body.ID,
       };
       let userResume = await this.userresumeService.updateOnlineResume(params);
       if (userResume) {
-        return new ResponseSuccess("更新成功", userResume);
+        return new ResponseSuccess("更新成功", null);
       }
     } catch (error) {
       return new ResponseError(error.message, null, error.status);
