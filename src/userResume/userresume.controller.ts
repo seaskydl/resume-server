@@ -161,18 +161,17 @@ export class UserresumeController {
     try {
       let email = body.email;
       let ID = body.ID;
-      let ONLINE_LINK = getUuid();
       console.log("email", email, ID);
       let userResume: any = await this.userresumeService.publishOnline(
         email,
-        ID,
-        ONLINE_LINK
+        ID
       );
       if (userResume) {
         let responseData = {
           ONLINE_LINK: userResume.ONLINE_LINK,
           IS_ONLINE: userResume.IS_ONLINE,
         };
+        console.log("responseData", responseData);
         return new ResponseSuccess("发布成功", responseData);
       }
     } catch (error) {

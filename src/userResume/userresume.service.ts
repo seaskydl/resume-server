@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import { getUuid } from "common/utils/common";
 import { getNowDate } from "common/utils/date";
 import pageQuery from "common/utils/pageQuery";
 import mongoose, { Model } from "mongoose";
@@ -160,12 +161,19 @@ export class UserresumeService {
   }
 
   // 发布为线上简历
-  async publishOnline(email: string, ID: string, ONLINE_LINK: string) {
-    let userresume = await this.userresumeModel.findOne({
+  async publishOnline(email: string, ID: string) {
+    let userresume: any = await this.userresumeModel.findOne({
       EMAIL: email,
       ID: ID,
     });
+    let ONLINE_LINK;
     if (userresume) {
+      // 是否又ONLINE_LINK
+      if (userresume.ONLINE_LINK) {
+        ONLINE_LINK = userresume.ONLINE_LINK;
+      } else {
+        ONLINE_LINK = getUuid();
+      }
       await this.userresumeModel.updateOne(
         { EMAIL: email, ID: ID },
         {
