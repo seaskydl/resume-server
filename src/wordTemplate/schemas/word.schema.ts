@@ -27,6 +27,7 @@ export const WordSchema = new mongoose.Schema(
     views_users: Array, // 浏览用户
     collections_users: Array, // 收藏用户
     downloads_users: Array, // 下载用户
+    pay_users: Array, // 支付了的用户
   },
   {
     timestamps: { createdAt: "createDate", updatedAt: "updateDate" },

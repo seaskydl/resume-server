@@ -151,4 +151,19 @@ export class UnauthController {
       return new ResponseError(error.message, null, error.status);
     }
   }
+
+  @ApiOperation({ summary: "获取word模板的所有标签列表" })
+  @Get("getWordTemplateTagsList")
+  async getWordTemplateTagsList(): Promise<IResponse> {
+    try {
+      let tagsList: any = await this.unauthService.getWordTemplateTagsList();
+      if (tagsList) {
+        return new ResponseSuccess("查询成功", Array.from(tagsList));
+      } else {
+        return new ResponseError("查询失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
 }

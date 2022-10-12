@@ -144,9 +144,18 @@ export class UnauthService {
       }
       // 查询条件
       let queryParams;
-      if (queryDto.category) {
+      if (queryDto.category && queryDto.tag) {
         queryParams = {
           category: { $elemMatch: { $eq: queryDto.category } },
+          tags: { $elemMatch: { $eq: queryDto.tag } },
+        };
+      } else if (queryDto.category) {
+        queryParams = {
+          category: { $elemMatch: { $eq: queryDto.category } },
+        };
+      } else if (queryDto.tag) {
+        queryParams = {
+          tags: { $elemMatch: { $eq: queryDto.tag } },
         };
       } else {
         queryParams = {};
@@ -327,5 +336,22 @@ export class UnauthService {
   // 查询word模板分类列表
   async getWordCategoryList() {
     return await this.wordcategoryModel.find().exec();
+  }
+
+  // 查询所有word模板的标签列表
+  async getWordTemplateTagsList() {
+    let tagsList = new Set([]);
+    let wordList = await this.wordModel.find().exec();
+    if (wordList) {
+      wordList.forEach((item: any) => {
+        item.tags.forEach((tag: any) => {
+          tagsList.add(tag);
+        });
+      });
+
+      return tagsList;
+    } else {
+      throw new HttpException("查询标签分类失败", HttpStatus.BAD_REQUEST);
+    }
   }
 }
