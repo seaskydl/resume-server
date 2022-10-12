@@ -74,11 +74,29 @@ export class WordService {
   }
 
   // 获取word文件下载链接
-  async wordDownloadUrl(id: string) {
+  async wordDownloadUrl(id: string, email: string) {
+    await this.wordModel.findOneAndUpdate(
+      { _id: id },
+      { $inc: { downloads: 1 } }
+    ); // 下载量+1
+
     let word = await this.wordModel.findOne({ _id: id });
     if (!word) {
       throw new HttpException("模板不存在", HttpStatus.NOT_FOUND);
     } else {
+      // 判断是否支付，支付则可以继续执行
+
+      // 添加下载用户
+      await this.wordModel.findOneAndUpdate(
+        { _id: id },
+        {
+          $addToSet: { downloads_users: email },
+        },
+        { upsert: true, new: true }
+      );
+      console.log("下载用户添加成功");
+
+      // 返回文件下载地址
       return {
         fileUrl: word.fileUrl,
       };

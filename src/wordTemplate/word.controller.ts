@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
@@ -103,9 +104,11 @@ export class WordController {
   @Get("wordDownloadUrl/:id")
   @UseGuards(RolesGuard)
   @Roles("User")
-  async wordDownloadUrl(@Param() params): Promise<IResponse> {
+  async wordDownloadUrl(@Param() params, @Req() req): Promise<IResponse> {
     try {
-      let url = await this.wordService.wordDownloadUrl(params.id);
+      let email = req.user.email;
+
+      let url = await this.wordService.wordDownloadUrl(params.id, email);
       if (url) {
         return new ResponseSuccess("获取成功", url);
       }
