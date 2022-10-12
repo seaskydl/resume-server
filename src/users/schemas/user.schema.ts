@@ -1,7 +1,4 @@
 import * as mongoose from "mongoose";
-import { PhotoSchema } from "common/schemas/photo.schema";
-const moment = require("moment");
-
 export const UserSchema = new mongoose.Schema(
   {
     id: String,

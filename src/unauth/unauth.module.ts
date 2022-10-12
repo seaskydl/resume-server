@@ -8,6 +8,8 @@ import { ResumeSchema } from "resume/schemas/resume.schema";
 import { ResumeactiveSchema } from "resumeactive/schemas/resumeactive.schema";
 import { UserresumeSchema } from "userResume/schemas/userresume.schema";
 import { UserSchema } from "users/schemas/user.schema";
+import { WordcategorySchema } from "wordCategory/schemas/wordcategory.schema";
+import { WordSchema } from "wordTemplate/schemas/word.schema";
 import { SponsorSchema } from "./schemas/sponsor.schemas";
 import { UnauthController } from "./unauth.controller";
 import { UnauthService } from "./unauth.service";
@@ -25,6 +27,10 @@ import { UnauthService } from "./unauth.service";
     MongooseModule.forFeature([
       { name: "Userresume", schema: UserresumeSchema },
     ]),
+    MongooseModule.forFeature([
+      { name: "Wordcategory", schema: WordcategorySchema },
+    ]),
+    MongooseModule.forFeature([{ name: "Word", schema: WordSchema }]),
     HttpModule,
   ],
   controllers: [UnauthController],

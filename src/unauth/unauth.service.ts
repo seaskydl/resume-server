@@ -6,12 +6,13 @@ import { QueryDto } from "../resume/dto/query.dto";
 import pageQuery from "common/utils/pageQuery";
 import { Sponsor } from "./interfaces/sponsor.interface";
 import { Category } from "category/interface/category.interface";
-import { Resumeactive } from "resumeactive/interfaces/resumeactive.interface";
 import { User } from "users/interfaces/user.interface";
 import { Requestip } from "requestip/interfaces/requestip.interface";
 import { HttpService } from "@nestjs/axios";
 import { lastValueFrom } from "rxjs";
 import { default as config } from "../config";
+import { Wordcategory } from "wordCategory/interface/wordcategory.interface";
+import { Word } from "wordTemplate/interfaces/word.interface";
 
 @Injectable()
 export class UnauthService {
@@ -21,12 +22,15 @@ export class UnauthService {
     @InjectModel("Category") private readonly CategoryModel: Model<Category>,
     @InjectModel("Userresume") private readonly userresumeModel: Model<Resume>,
     @InjectModel("Requestip") private readonly requestipModel: Model<Requestip>,
+    @InjectModel("Word") private readonly wordModel: Model<Word>,
+    @InjectModel("Wordcategory")
+    private readonly wordcategoryModel: Model<Wordcategory>,
     @InjectModel("User")
     private readonly userModel: Model<User>,
     private httpService: HttpService
   ) {}
 
-  // 查询模板列表
+  // 查询模板列表-不查出详细数据
   async getTemplateList(queryDto) {
     return new Promise(async (resolve, reject) => {
       let page = Number(queryDto.page) || 1; // 查询页码
@@ -114,6 +118,105 @@ export class UnauthService {
         }
       );
     });
+  }
+
+  // 查询word模板列表，不查出详细数据
+  async getWordTemplateList(queryDto) {
+    return new Promise(async (resolve, reject) => {
+      let page = Number(queryDto.page) || 1; // 查询页码
+      let limit = Number(queryDto.limit) || 10; // 查询条数
+      let sort;
+      // 排序规则
+      if (queryDto.sort) {
+        if (queryDto.sort === "time") {
+          sort = {
+            createDate: -1,
+          };
+        } else {
+          sort = {
+            views: -1,
+          };
+        }
+      } else {
+        sort = {
+          views: -1,
+        };
+      }
+      // 查询条件
+      let queryParams;
+      if (queryDto.category) {
+        queryParams = {
+          category: { $elemMatch: { $eq: queryDto.category } },
+        };
+      } else {
+        queryParams = {};
+      }
+      queryParams.PASS_AUDIT = 1;
+      console.log("查询参数", page, limit);
+      pageQuery(
+        page,
+        limit,
+        this.wordModel,
+        "",
+        queryParams,
+        sort,
+        async (error, $page) => {
+          if (error) {
+            reject(error);
+          } else {
+            let list = $page.results.map((item) => {
+              return {
+                _id: item._id,
+                name: item.name, // word模板名称
+                profile: item.profile, // 模板简介
+                category: item.category, // 模板分类
+                previewUrl: item.previewUrl, // 模板预览图
+                tags: item.tags, // 模板标签
+                likes: item.likes,
+                views: item.views,
+                collections: item.collections,
+                downloads: item.downloads,
+              };
+            });
+            let responseData = {
+              page: {
+                currentPage: $page.pageNumber,
+                pageCount: $page.pageCount,
+                count: $page.count,
+                isEnd: $page.isEnd,
+              },
+              list: list,
+            };
+            resolve(responseData);
+          }
+        }
+      );
+    });
+  }
+
+  // 查询单个word模板数据，不带下载链接
+  async getWordTemplateInfo(id: string) {
+    // 浏览量加1
+    console.log("模板浏览量加1", id);
+
+    await this.wordModel.findOneAndUpdate({ _id: id }, { $inc: { views: 1 } });
+    let wordInfo = await this.wordModel.findById(id);
+    if (wordInfo) {
+      return {
+        _id: wordInfo._id,
+        name: wordInfo.name, // word模板名称
+        profile: wordInfo.profile, // 模板简介
+        category: wordInfo.category, // 模板分类
+        previewUrl: wordInfo.previewUrl, // 模板预览图
+        tags: wordInfo.tags, // 模板标签
+        likes: wordInfo.likes,
+        views: wordInfo.views,
+        collections: wordInfo.collections,
+        downloads: wordInfo.downloads,
+      };
+    } else {
+      throw new HttpException("模板不存在", HttpStatus.NOT_FOUND);
+    }
   }
 
   // 查询赞助列表
@@ -219,5 +322,10 @@ export class UnauthService {
     } else {
       throw new HttpException("简历不存在", HttpStatus.FOUND);
     }
+  }
+
+  // 查询word模板分类列表
+  async getWordCategoryList() {
+    return await this.wordcategoryModel.find().exec();
   }
 }

@@ -34,13 +34,14 @@ export class UploadService {
         metaData,
         (err, etag) => {
           if (err) {
-            console.log("文件上传失败", err);
+            console.log("文件上传失败", err, etag);
             reject(err);
           } else {
             let responseData = {
               fileName: req.file.originalname,
               fileUrl:
-                `https://smallpig.site:9000/resume/${path}/` + req.file.filename,
+                `https://smallpig.site:9000/resume/${path}/` +
+                req.file.filename,
               fileSize: req.file.size,
             };
             delDir(fullPath); // 删除本地临时文件夹

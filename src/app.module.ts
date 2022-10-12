@@ -12,6 +12,8 @@ import { PuppeteerModule } from "puppeteer/puppeteer.module";
 import { PanelModule } from "panel/panel.module";
 import { CategoryModule } from "category/category.module";
 import { ResumeactiveModule } from "resumeactive/resumeactive.module";
+import { WordModule } from "wordTemplate/word.module";
+import { WordcategoryModule } from "wordCategory/wordcategory.module";
 
 const userString =
   config.db.user && config.db.pass
@@ -43,6 +45,8 @@ const authSource = config.db.authSource
     PanelModule,
     CategoryModule,
     ResumeactiveModule,
+    WordModule,
+    WordcategoryModule,
   ],
   // controllers: [AppController],
   providers: [AppService],

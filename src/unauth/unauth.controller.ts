@@ -102,4 +102,53 @@ export class UnauthController {
       return new ResponseError(error.message, null, error.status);
     }
   }
+
+  @ApiOperation({ summary: "查询word模板分类列表" })
+  @Get("getWordCategoryList")
+  async getWordCategoryList(): Promise<IResponse> {
+    try {
+      let categoryList = await this.unauthService.getWordCategoryList();
+      if (categoryList) {
+        return new ResponseSuccess("查询成功", categoryList);
+      } else {
+        return new ResponseError("查询失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "查询所有word模板列表-不查询出详细数据" })
+  @Get("getWordTemplateList")
+  async getWordTemplateList(@Query() query): Promise<IResponse> {
+    try {
+      let templateList: any = await this.unauthService.getWordTemplateList(
+        query
+      );
+      if (templateList) {
+        return new ResponseSuccess("查询成功", templateList);
+      } else {
+        return new ResponseError("查询失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "查询单个word模板数据-不带下载链接" })
+  @Get("getWordTemplateInfo/:id")
+  async getWordTemplateInfo(@Param() params): Promise<IResponse> {
+    try {
+      let wordTemplate: any = await this.unauthService.getWordTemplateInfo(
+        params.id
+      );
+      if (wordTemplate) {
+        return new ResponseSuccess("查询成功", wordTemplate);
+      } else {
+        return new ResponseError("查询失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
 }
