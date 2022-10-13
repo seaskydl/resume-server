@@ -118,11 +118,43 @@ export class UnauthController {
     }
   }
 
+  @ApiOperation({ summary: "查询ppt模板分类列表" })
+  @Get("getPPTCategoryList")
+  async getPPTCategoryList(): Promise<IResponse> {
+    try {
+      let categoryList = await this.unauthService.getPPTCategoryList();
+      if (categoryList) {
+        return new ResponseSuccess("查询成功", categoryList);
+      } else {
+        return new ResponseError("查询失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
   @ApiOperation({ summary: "查询所有word模板列表-不查询出详细数据" })
   @Get("getWordTemplateList")
   async getWordTemplateList(@Query() query): Promise<IResponse> {
     try {
       let templateList: any = await this.unauthService.getWordTemplateList(
+        query
+      );
+      if (templateList) {
+        return new ResponseSuccess("查询成功", templateList);
+      } else {
+        return new ResponseError("查询失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "查询所有ppt模板列表-不查询出详细数据" })
+  @Get("getPPTTemplateList")
+  async getPPTTemplateList(@Query() query): Promise<IResponse> {
+    try {
+      let templateList: any = await this.unauthService.getPPTTemplateList(
         query
       );
       if (templateList) {
@@ -152,11 +184,43 @@ export class UnauthController {
     }
   }
 
+  @ApiOperation({ summary: "查询单个ppt模板数据-不带下载链接" })
+  @Get("getPPTTemplateInfo/:id")
+  async getPPTTemplateInfo(@Param() params): Promise<IResponse> {
+    try {
+      let pptTemplate: any = await this.unauthService.getPPTTemplateInfo(
+        params.id
+      );
+      if (pptTemplate) {
+        return new ResponseSuccess("查询成功", pptTemplate);
+      } else {
+        return new ResponseError("查询失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
   @ApiOperation({ summary: "获取word模板的所有标签列表" })
   @Get("getWordTemplateTagsList")
   async getWordTemplateTagsList(): Promise<IResponse> {
     try {
       let tagsList: any = await this.unauthService.getWordTemplateTagsList();
+      if (tagsList) {
+        return new ResponseSuccess("查询成功", Array.from(tagsList));
+      } else {
+        return new ResponseError("查询失败", null);
+      }
+    } catch (error) {
+      return new ResponseError(error.message, null, error.status);
+    }
+  }
+
+  @ApiOperation({ summary: "获取ppt模板的所有标签列表" })
+  @Get("getPPTTemplateTagsList")
+  async getPPTTemplateTagsList(): Promise<IResponse> {
+    try {
+      let tagsList: any = await this.unauthService.getPPTTemplateTagsList();
       if (tagsList) {
         return new ResponseSuccess("查询成功", Array.from(tagsList));
       } else {

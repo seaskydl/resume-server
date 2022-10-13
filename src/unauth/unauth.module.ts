@@ -3,6 +3,8 @@ import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { CategorySchema } from "category/schemas/category.schema";
 import { LoggerMiddleware } from "common/middlewares/logger.middleware";
+import { PPTcategorySchema } from "pptCategory/schemas/pptcategory.schema";
+import { PPTSchema } from "pptTemplate/schemas/ppt.schema";
 import { RequestipSchema } from "requestip/schemas/requestip.schema";
 import { ResumeSchema } from "resume/schemas/resume.schema";
 import { ResumeactiveSchema } from "resumeactive/schemas/resumeactive.schema";
@@ -31,6 +33,10 @@ import { UnauthService } from "./unauth.service";
       { name: "Wordcategory", schema: WordcategorySchema },
     ]),
     MongooseModule.forFeature([{ name: "Word", schema: WordSchema }]),
+    MongooseModule.forFeature([
+      { name: "PPTcategory", schema: PPTcategorySchema },
+    ]),
+    MongooseModule.forFeature([{ name: "PPT", schema: PPTSchema }]),
     HttpModule,
   ],
   controllers: [UnauthController],

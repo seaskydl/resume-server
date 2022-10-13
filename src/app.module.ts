@@ -14,6 +14,8 @@ import { CategoryModule } from "category/category.module";
 import { ResumeactiveModule } from "resumeactive/resumeactive.module";
 import { WordModule } from "wordTemplate/word.module";
 import { WordcategoryModule } from "wordCategory/wordcategory.module";
+import { PPTModule } from "pptTemplate/ppt.module";
+import { PPTcategoryModule } from "pptCategory/pptcategory.module";
 
 const userString =
   config.db.user && config.db.pass
@@ -47,6 +49,8 @@ const authSource = config.db.authSource
     ResumeactiveModule,
     WordModule,
     WordcategoryModule,
+    PPTModule,
+    PPTcategoryModule,
   ],
   // controllers: [AppController],
   providers: [AppService],

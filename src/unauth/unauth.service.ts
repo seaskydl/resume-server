@@ -13,6 +13,8 @@ import { lastValueFrom } from "rxjs";
 import { default as config } from "../config";
 import { Wordcategory } from "wordCategory/interface/wordcategory.interface";
 import { Word } from "wordTemplate/interfaces/word.interface";
+import { PPTcategory } from "pptCategory/interface/pptcategory.interface";
+import { PPT } from "pptTemplate/interfaces/ppt.interface";
 
 @Injectable()
 export class UnauthService {
@@ -25,6 +27,9 @@ export class UnauthService {
     @InjectModel("Word") private readonly wordModel: Model<Word>,
     @InjectModel("Wordcategory")
     private readonly wordcategoryModel: Model<Wordcategory>,
+    @InjectModel("PPTcategory")
+    private readonly pptcategoryModel: Model<PPTcategory>,
+    @InjectModel("PPT") private readonly pptModel: Model<PPT>,
     @InjectModel("User")
     private readonly userModel: Model<User>,
     private httpService: HttpService
@@ -203,6 +208,89 @@ export class UnauthService {
     });
   }
 
+  // 查询ppt模板列表，不查出详细数据
+  async getPPTTemplateList(queryDto) {
+    return new Promise(async (resolve, reject) => {
+      let page = Number(queryDto.page) || 1; // 查询页码
+      let limit = Number(queryDto.limit) || 10; // 查询条数
+      let sort;
+      // 排序规则
+      if (queryDto.sort) {
+        if (queryDto.sort === "time") {
+          sort = {
+            createDate: -1,
+          };
+        } else {
+          sort = {
+            views: -1,
+          };
+        }
+      } else {
+        sort = {
+          views: -1,
+        };
+      }
+      // 查询条件
+      let queryParams;
+      if (queryDto.category && queryDto.tag) {
+        queryParams = {
+          category: { $elemMatch: { $eq: queryDto.category } },
+          tags: { $elemMatch: { $eq: queryDto.tag } },
+        };
+      } else if (queryDto.category) {
+        queryParams = {
+          category: { $elemMatch: { $eq: queryDto.category } },
+        };
+      } else if (queryDto.tag) {
+        queryParams = {
+          tags: { $elemMatch: { $eq: queryDto.tag } },
+        };
+      } else {
+        queryParams = {};
+      }
+      queryParams.PASS_AUDIT = 1;
+      console.log("查询参数", page, limit);
+      pageQuery(
+        page,
+        limit,
+        this.pptModel,
+        "",
+        queryParams,
+        sort,
+        async (error, $page) => {
+          if (error) {
+            reject(error);
+          } else {
+            let list = $page.results.map((item) => {
+              return {
+                _id: item._id,
+                name: item.name, // word模板名称
+                profile: item.profile, // 模板简介
+                category: item.category, // 模板分类
+                previewUrl: item.previewUrl, // 模板预览图
+                tags: item.tags, // 模板标签
+                likes: item.likes,
+                views: item.views,
+                collections: item.collections,
+                downloads: item.downloads,
+              };
+            });
+            let responseData = {
+              page: {
+                currentPage: $page.pageNumber,
+                pageCount: $page.pageCount,
+                count: $page.count,
+                isEnd: $page.isEnd,
+              },
+              list: list,
+            };
+            resolve(responseData);
+          }
+        }
+      );
+    });
+  }
+
   // 查询单个word模板数据，不带下载链接
   async getWordTemplateInfo(id: string) {
     // 浏览量加1
@@ -222,6 +310,34 @@ export class UnauthService {
         views: wordInfo.views,
         collections: wordInfo.collections,
         downloads: wordInfo.downloads,
+      };
+    } else {
+      throw new HttpException("模板不存在", HttpStatus.NOT_FOUND);
+    }
+  }
+
+  // 查询单个ppt模板数据，不带下载链接
+  async getPPTTemplateInfo(id: string) {
+    // 浏览量加1
+    console.log("模板浏览量加1", id);
+
+    await this.pptModel.findOneAndUpdate({ _id: id }, { $inc: { views: 1 } });
+    let pptInfo = await this.pptModel.findById(id);
+    if (pptInfo) {
+      return {
+        _id: pptInfo._id,
+        name: pptInfo.name, // word模板名称
+        profile: pptInfo.profile, // 模板简介
+        category: pptInfo.category, // 模板分类
+        previewUrl: pptInfo.previewUrl, // 模板预览图
+        tags: pptInfo.tags, // 模板标签
+        effect: pptInfo.effect, // 效果
+        proportion: pptInfo.proportion, // 比列
+        pages: pptInfo.pages, // 总页数
+        likes: pptInfo.likes,
+        views: pptInfo.views,
+        collections: pptInfo.collections,
+        downloads: pptInfo.downloads,
       };
     } else {
       throw new HttpException("模板不存在", HttpStatus.NOT_FOUND);
@@ -338,6 +454,11 @@ export class UnauthService {
     return await this.wordcategoryModel.find().exec();
   }
 
+  // 查询PPT模板分类列表
+  async getPPTCategoryList() {
+    return await this.pptcategoryModel.find().exec();
+  }
+
   // 查询所有word模板的标签列表
   async getWordTemplateTagsList() {
     let tagsList = new Set([]);
@@ -349,6 +470,22 @@ export class UnauthService {
         });
       });
 
+      return tagsList;
+    } else {
+      throw new HttpException("查询标签分类失败", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  // 查询所有ppt模板的标签列表
+  async getPPTTemplateTagsList() {
+    let tagsList = new Set([]);
+    let pptList = await this.pptModel.find().exec();
+    if (pptList) {
+      pptList.forEach((item: any) => {
+        item.tags.forEach((tag: any) => {
+          tagsList.add(tag);
+        });
+      });
       return tagsList;
     } else {
       throw new HttpException("查询标签分类失败", HttpStatus.BAD_REQUEST);
